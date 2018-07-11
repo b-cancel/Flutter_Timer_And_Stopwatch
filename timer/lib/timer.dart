@@ -119,6 +119,18 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
       ),
     );
   }
+  
+  /*
+  There are 2 main states the timer can be in... And multiple sub states... And each has its signature
+  - - - 0. Either
+  * total Time, time Left (will be correct as long time passed is right) 
+  - - - 1. Running (timer.isAnimating, timeLeft = null)
+  * !timer.isCompleted, timePassed = timer.elapsed RUNNING
+  - - - 2. Not running (!timer.isAnimating, timeLeft != null)
+  * timer.isCompleted... DONE
+  * !TIMER.ISCOMPLETED... NEVER STARTED
+  *.!timer.isCompleted... PAUSED
+  */
 
   //-------------------------SINGLE TIMER METHODS-------------------------
 
