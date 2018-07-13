@@ -122,12 +122,29 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
 
   //-------------------------SINGLE TIMER METHODS-------------------------
 
-  set(Duration newDuration){
-    //save whether or not the timer was running
-    bool wasRunning = isRunning();
+  //we can either start a brand new timer, or start a timer from its previous location
+  start(){
+    if(timer.isAnimating == false){
+      timer.reset(); //reset the timer to prevent odd behavior
+      if(lastElapsedDurationNOANIM == null) timer.duration = originalTime; //this is the first time the timer has been started
+      else timer.duration = lastElapsedDurationNOANIM; //the timer is being unpaused
+      lastElapsedDurationNOANIM = null;
+      timer.forward();
+    }
+  }
 
-    //if the timer is running stop it
-    stop();
+  stop(){
+    if(timer.isAnimating == true){
+      lastElapsedDurationNOANIM = getTimeLeft();
+      timer.stop();
+    }
+  }
+
+  set(Duration newDuration){
+
+    bool wasRunning = timer.isAnimating; //save whether or not the timer was running
+    stop(); //if the timer is running stop it
+    timer.reset(); //reset the timer to prevent odd behavior
 
     //set the new timer values
     originalTime = newDuration;
@@ -137,44 +154,20 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
     if(wasRunning) start();
   }
 
-  //we can either start a brand new timer, or start a timer from its previous location
-  start(){
-    if(isRunning() == false){
-      timer.reset(); //without this the timer will behave oddly (often going faster than it should)
-      if(lastElapsedDurationNOANIM == null) timer.duration = originalTime;
-      else timer.duration = lastElapsedDurationNOANIM;
-      print("START");
-      print("timer will run for " + timer.duration.toString());
-      lastElapsedDurationNOANIM = null;
-      timer.forward();
-    }
-  }
-
-  stop(){
-    if(isRunning() == true){
-      print("needed to stop");
-      lastElapsedDurationNOANIM = getTimeLeft(); //how much time is left (this is accurate)
-      print("END");
-      timer.stop();
-    }
-  }
-
-  reset(){
-
-  }
+  reset() => set(originalTime);
 
   Duration getOriginalTime() => originalTime;
   Duration getTimePassed(){
-    if(timer.isAnimating)
+    if(timer.isAnimating) //the timer is playing
       return timer.lastElapsedDuration + (originalTime-timer.duration);
-    else{ //timer.lastElapsedDuration == null
-      if(lastElapsedDurationNOANIM != null) //we have paused the timer
-        return getOriginalTime() - lastElapsedDurationNOANIM;
-      else{
+    else{
+      if(lastElapsedDurationNOANIM != null) //the timer is paused
+        return originalTime - lastElapsedDurationNOANIM;
+      else{ //the timer is stopped
         if(timer.isCompleted)
-          return getOriginalTime(); //we should see all 0s
-        else //time has never been started
-          return Duration.zero; //we should see the original time
+          return originalTime; //the timer finished on its own (Show all 0s on screen)
+        else
+          return Duration.zero; //the timer never began (show original time on screen)
       }
     }
   }
