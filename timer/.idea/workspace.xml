@@ -15,26 +15,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.dart" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.dart" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="833">
-              <caret line="49" column="7" lean-forward="false" selection-start-line="48" selection-start-column="2" selection-end-line="57" selection-end-column="3" />
+            <state relative-caret-position="238">
+              <caret line="17" column="24" lean-forward="true" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
-                <marker date="1531259815042" expanded="false" signature="9043:9051" ph="&lt;~&gt;" />
-                <marker date="1531259815042" expanded="false" signature="9083:9097" ph="(...)" />
-                <marker date="1531259815042" expanded="false" signature="9185:9493" ph="(...)" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="timer.dart" pinned="false" current-in-tab="true">
+      <file leaf-file-name="timer.dart" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/timer.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2652">
-              <caret line="156" column="31" lean-forward="true" selection-start-line="156" selection-start-column="31" selection-end-line="156" selection-end-column="31" />
+            <state relative-caret-position="153">
+              <caret line="37" column="2" lean-forward="false" selection-start-line="37" selection-start-column="2" selection-end-line="47" selection-end-column="3" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -70,8 +67,8 @@
       <list>
         <option value="$PROJECT_DIR$/lib/timer2.dart" />
         <option value="$PROJECT_DIR$/lib/test.dart" />
-        <option value="$PROJECT_DIR$/lib/main.dart" />
         <option value="$PROJECT_DIR$/lib/timer.dart" />
+        <option value="$PROJECT_DIR$/lib/main.dart" />
       </list>
     </option>
   </component>
@@ -293,9 +290,6 @@
           <caret line="49" column="7" lean-forward="true" selection-start-line="48" selection-start-column="2" selection-end-line="57" selection-end-column="3" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <marker date="1531259815042" expanded="false" signature="9043:9051" ph="&lt;~&gt;" />
-            <marker date="1531259815042" expanded="false" signature="9083:9097" ph="(...)" />
-            <marker date="1531259815042" expanded="false" signature="9185:9493" ph="(...)" />
           </folding>
         </state>
       </provider>
@@ -316,9 +310,6 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
-            <marker date="1531259815042" expanded="false" signature="9043:9051" ph="&lt;~&gt;" />
-            <marker date="1531259815042" expanded="false" signature="9083:9097" ph="(...)" />
-            <marker date="1531259815042" expanded="false" signature="9185:9493" ph="(...)" />
           </folding>
         </state>
       </provider>
@@ -352,6 +343,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
           <caret line="79" column="8" lean-forward="false" selection-start-line="79" selection-start-column="8" selection-end-line="79" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -371,19 +363,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/test.dart" />
     <entry file="file://$PROJECT_DIR$/lib/timer2.dart" />
-    <entry file="file://$PROJECT_DIR$/lib/main.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="49" column="7" lean-forward="false" selection-start-line="48" selection-start-column="2" selection-end-line="57" selection-end-column="3" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-            <marker date="1531259815042" expanded="false" signature="9043:9051" ph="&lt;~&gt;" />
-            <marker date="1531259815042" expanded="false" signature="9083:9097" ph="(...)" />
-            <marker date="1531259815042" expanded="false" signature="9185:9493" ph="(...)" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Program Files/flutter/packages/flutter/lib/src/animation/animation_controller.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="221">
@@ -394,8 +373,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/timer.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2652">
-          <caret line="156" column="31" lean-forward="true" selection-start-line="156" selection-start-column="31" selection-end-line="156" selection-end-column="31" />
+        <state relative-caret-position="153">
+          <caret line="37" column="2" lean-forward="false" selection-start-line="37" selection-start-column="2" selection-end-line="47" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/main.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="17" column="24" lean-forward="true" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>

@@ -2,41 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-///Description: Timer Widget that works by counting down one single timeValue
-///Example: suppose my Time Unit is seconds, then I can count down from 90
-///I can then interpret that 90 as 1 minute and 30 seconds
-
-enum TimeUnit {days, hours, minutes, seconds, milliseconds, microseconds}
-//1000 microseconds [3] = 1 millisecond
-//1000 milliseconds [3] = 1 second
-//60 seconds [2] = 1 minute
-//60 minutes [2] = 1 hour
-//24 hours [2] = 1 day
-
 class TimerFunctions{
-  //---Single Timer Functions
-  Function setTimer;
-  Function startTimer;
-  Function stopTimer;
-  Function resetAndStopTimer;
-  //---Double [OR] Timer Functions
-  Function startOrStopTimer;
-  //---Double [AND] Timer Functions
-  Function setAndStartTimer;
-  Function setAndStopTimer;
-  Function stopAndSetTimer;
-  Function resetAndStopAndStart;
-  //---Getter Functions
-  Function getTotalTime;
+  //---Command Functions
+  Function start;
+  Function stop;
+  Function set;
+  Function reset;
+  //---Information Functions
+  Function getOriginalTime;
   Function getTimePassed;
   Function getTimeLeft;
   Function isRunning;
-  //---Other Functions
-  Function setTimeUnit;
-  Function setTimeUnitMax;
-  Function getTimeUnit;
-  Function getTimeUnitMax;
-  //---Functions that should already exists in the duration class
+  //---Duration Functions
   Function getFormattedDuration;
   Function getStringFromFormattedDuration;
   Function getStringFromDuration;
@@ -67,60 +44,37 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
     originalTime = Duration.zero;
     lastElapsedDurationNOANIM = null;
 
-    autoUpdateUI();
+    linkFunctions();
   }
 
-  autoUpdateUI() async{
-    int updatesPerSecond = 60; //60 is the max that will make any visual difference
-    while(true){
-      int millisecondsToWait = ((1/updatesPerSecond) * 1000).round();
-      await Future.delayed(new Duration(milliseconds: millisecondsToWait)); //wait some time before updating our UI
-      setState(() {}); //update our UI based on our timer
-    }
+  linkFunctions(){
+    var w = widget.functions;
+    //---Command Functions
+    w.start = start;
+    w.stop = stop;
+    w.set = set;
+    w.reset = reset;
+    //---Information Functions
+    w.getOriginalTime = getOriginalTime;
+    w.getTimePassed = getTimePassed;
+    w.getTimeLeft = getTimeLeft;
+    w.isRunning = isRunning;
+    //---Duration Functions
+    w.getFormattedDuration = getFormattedDuration;
+    w.getStringFromFormattedDuration = getStringFromFormattedDuration;
+    w.getStringFromDuration = getStringFromDuration;
   }
 
   @override
   Widget build(BuildContext context) {
-    String theString = getTimeLeft().toString();
+    linkFunctions();
 
-    return new Scaffold(
-      body: new Container(
-        alignment: Alignment.center,
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(theString),
-            new FlatButton(
-              onPressed: () => set(new Duration(seconds: 10)),
-              child: new Text("Set to 10 seconds"),
-            ),
-            new FlatButton(
-              onPressed: () => set(new Duration(seconds: 20)),
-              child: new Text("Set to 20 seconds"),
-            ),
-            new FlatButton(
-              onPressed: () => set(new Duration(seconds: 30)),
-              child: new Text("Set to 30 seconds"),
-            ),
-            new FlatButton(
-              onPressed: () => start(),
-              child: new Text("start"),
-            ),
-            new FlatButton(
-              onPressed: () => stop(),
-              child: new Text("stop"),
-            ),
-            new FlatButton(
-              onPressed: () => reset(),
-              child: new Text("reset"),
-            ),
-          ],
-        )
-      ),
+    return new Container(
+      child: new Text(""),
     );
   }
 
-  //-------------------------SINGLE TIMER METHODS-------------------------
+  //-------------------------COMMAND FUNCTIONS-------------------------
 
   //we can either start a brand new timer, or start a timer from its previous location
   start(){
@@ -156,7 +110,10 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
 
   reset() => set(originalTime);
 
+  //-------------------------INFORMATION FUNCTIONS-------------------------
+
   Duration getOriginalTime() => originalTime;
+
   Duration getTimePassed(){
     if(timer.isAnimating) //the timer is playing
       return timer.lastElapsedDuration + (originalTime-timer.duration);
@@ -171,7 +128,45 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
       }
     }
   }
+
   Duration getTimeLeft() => getOriginalTime() - getTimePassed();
 
   isRunning() => timer.isAnimating;
+
+  //-------------------------DURATION FUNCTIONS-------------------------
+
+  List getFormattedDuration(Duration time){
+    int days, hours, minutes, seconds, milliseconds, microseconds;
+
+    //Returns a string with hours, minutes, seconds, and microseconds, in the following format: HH:MM:SS.mmmmmm
+    //0:00:00.000000
+    String timeString = time.toString();
+    int len = timeString.length;
+
+    //extract all the default value
+    microseconds = int.parse(timeString.substring(len-6, len));
+    seconds = int.parse(timeString.substring(len-9,len-7));
+    minutes = int.parse(timeString.substring(len-12,len-10));
+    hours = int.parse(timeString.substring(0,len-13));
+
+    //correct for hours and microseconds
+    milliseconds = (microseconds/1000).truncate();
+    microseconds = microseconds%1000;
+    days = (hours/24).truncate();
+    hours = hours%24;
+
+    return [days, hours, minutes, seconds, milliseconds, microseconds];
+  }
+
+  String getStringFromFormattedDuration(List formattedDuration){
+    return "\n"
+        + formattedDuration[0].toString() + " days\n"
+        + formattedDuration[1].toString() + " hours\n"
+        + formattedDuration[2].toString() + " minutes\n"
+        + formattedDuration[3].toString() + " seconds\n"
+        + formattedDuration[4].toString() + " milliseconds\n"
+        + formattedDuration[5].toString() + " microseconds\n";
+  }
+
+  String getStringFromDuration(Duration time) => getStringFromFormattedDuration(getFormattedDuration(time));
 }
