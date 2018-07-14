@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class TimerFunctions{
@@ -13,10 +11,6 @@ class TimerFunctions{
   Function getTimePassed;
   Function getTimeLeft;
   Function isRunning;
-  //---Duration Functions
-  Function getFormattedDuration;
-  Function getStringFromFormattedDuration;
-  Function getStringFromDuration;
 }
 
 class Timer extends StatefulWidget {
@@ -30,22 +24,10 @@ class Timer extends StatefulWidget {
 class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
 
   AnimationController timer;
-  //REQUIRED because our "timer.duration" will not always be what we set it to originally because technically pausing (or stopped) a timer stops it and sets it all over again
+  //REQUIRED because our "timer.duration" will not always be what we set it to originally because technically pausing (or stopping) a timer stops it and sets it all over again
   Duration originalTime; //ONLY SET in the set method [no exceptions]
   //REQUIRED because our timer is paused (or stopped) it you can no longer access "timer.lastElapsedDuration"
   Duration lastElapsedDurationNOANIM; //ONLY NOT NULL when our timer is not animating
-
-  @override
-  void initState() {
-    super.initState();
-    timer = new AnimationController(
-      vsync: this,
-    );
-    originalTime = Duration.zero;
-    lastElapsedDurationNOANIM = null;
-
-    linkFunctions();
-  }
 
   linkFunctions(){
     var w = widget.functions;
@@ -59,10 +41,18 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
     w.getTimePassed = getTimePassed;
     w.getTimeLeft = getTimeLeft;
     w.isRunning = isRunning;
-    //---Duration Functions
-    w.getFormattedDuration = getFormattedDuration;
-    w.getStringFromFormattedDuration = getStringFromFormattedDuration;
-    w.getStringFromDuration = getStringFromDuration;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    timer = new AnimationController(
+      vsync: this,
+    );
+    originalTime = Duration.zero;
+    lastElapsedDurationNOANIM = null;
+
+    linkFunctions();
   }
 
   @override
@@ -72,6 +62,12 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
     return new Container(
       child: new Text(""),
     );
+  }
+
+  @override
+  void dispose(){
+    timer.dispose();
+    super.dispose();
   }
   
   /*
@@ -144,41 +140,4 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
   Duration getTimeLeft() => getOriginalTime() - getTimePassed();
 
   isRunning() => timer.isAnimating;
-
-  //-------------------------DURATION FUNCTIONS-------------------------
-
-  List getFormattedDuration(Duration time){
-    int days, hours, minutes, seconds, milliseconds, microseconds;
-
-    //Returns a string with hours, minutes, seconds, and microseconds, in the following format: HH:MM:SS.mmmmmm
-    //0:00:00.000000
-    String timeString = time.toString();
-    int len = timeString.length;
-
-    //extract all the default value
-    microseconds = int.parse(timeString.substring(len-6, len));
-    seconds = int.parse(timeString.substring(len-9,len-7));
-    minutes = int.parse(timeString.substring(len-12,len-10));
-    hours = int.parse(timeString.substring(0,len-13));
-
-    //correct for hours and microseconds
-    milliseconds = (microseconds/1000).truncate();
-    microseconds = microseconds%1000;
-    days = (hours/24).truncate();
-    hours = hours%24;
-
-    return [days, hours, minutes, seconds, milliseconds, microseconds];
-  }
-
-  String getStringFromFormattedDuration(List formattedDuration){
-    return "\n"
-        + formattedDuration[0].toString() + " days\n"
-        + formattedDuration[1].toString() + " hours\n"
-        + formattedDuration[2].toString() + " minutes\n"
-        + formattedDuration[3].toString() + " seconds\n"
-        + formattedDuration[4].toString() + " milliseconds\n"
-        + formattedDuration[5].toString() + " microseconds\n";
-  }
-
-  String getStringFromDuration(Duration time) => getStringFromFormattedDuration(getFormattedDuration(time));
 }
