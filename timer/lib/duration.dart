@@ -1,5 +1,7 @@
 //-------------------------DURATION FUNCTIONS-------------------------
 
+import 'dart:math';
+
 List getFormattedDuration(Duration time){
   int days, hours, minutes, seconds, milliseconds, microseconds;
 
@@ -34,3 +36,22 @@ String getStringFromFormattedDuration(List formattedDuration){
 }
 
 String getStringFromDuration(Duration time) => getStringFromFormattedDuration(getFormattedDuration(time));
+
+Duration getRandomDuration({
+  bool randomDays = false,
+  bool randomHours = false,
+  bool randomMinutes = false,
+  bool randomSeconds = false,
+  bool randomMilliseconds = false,
+  bool randomMicroseconds = false
+}){
+  var rand = new Random();
+  return new Duration(
+    days: (randomDays) ? rand.nextInt(365) : 0,
+    hours: (randomHours) ? rand.nextInt(24) : 0,
+    minutes: (randomMinutes) ? rand.nextInt(60) : 0,
+    seconds: (randomSeconds) ? rand.nextInt(60) : 0,
+    milliseconds: (randomMilliseconds) ? rand.nextInt(1000) : 0,
+    microseconds: (randomMicroseconds) ? rand.nextInt(1000) : 0,
+  );
+}

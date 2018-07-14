@@ -1,5 +1,5 @@
-name: timer
-description: A new Flutter application.
+name: timer and stopwatch
+description: A Implementation of a Timer and a StopWatch with easily interchangeable UI using an animation controller.
 
 dependencies:
   flutter:
