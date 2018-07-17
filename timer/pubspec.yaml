@@ -1,9 +1,12 @@
-name: timer and stopwatch
+name: timer
 description: A Implementation of a Timer and a StopWatch with easily interchangeable UI using an animation controller.
 
 dependencies:
   flutter:
     sdk: flutter
+  numberpicker: ^0.1.4
+  flutter_picker:
+    git: git://github.com/yangyxd/flutter_picker.git
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

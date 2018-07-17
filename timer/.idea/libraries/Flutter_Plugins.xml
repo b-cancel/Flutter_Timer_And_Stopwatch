@@ -1,6 +1,8 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://C:/Program Files/flutter/.pub-cache/git/flutter_picker-7c29a7db1a9fdf626e97d3406733e2714a7246ce" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES />
   </library>
