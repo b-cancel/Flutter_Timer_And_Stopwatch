@@ -1,5 +1,3 @@
-//-------------------------DURATION FUNCTIONS-------------------------
-
 import 'dart:math';
 
 List getFormattedDuration(Duration time){
