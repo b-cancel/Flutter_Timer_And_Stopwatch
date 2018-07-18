@@ -8,6 +8,7 @@ import 'package:timer/primaryComponents/stopwatch.dart' as stopwatchWidget;
 
 import 'package:timer/secondaryComponents/duration.dart';
 import 'package:timer/secondaryComponents/durationPicker.dart';
+import 'package:timer/secondaryComponents/materialSheet.dart';
 
 //days, hours, minutes, seconds, milliseconds, microseconds
 
@@ -95,6 +96,7 @@ class TimerExample extends StatelessWidget {
       appBar: AppBar(
         title: Text('Timer'),
       ),
+      backgroundColor: Colors.redAccent,
       body: new Stack(
         children: <Widget>[
           timer,
@@ -132,122 +134,132 @@ class _TimerUIState extends State<TimerUI> {
     String originalTimeString =
         getStringFromDuration(widget.timer.functions.getOriginalTime());
 
-    return new Scaffold(
-      key: _timerKey,
-      body: new Stack(
-        children: <Widget>[
-          new Container(
-            alignment: Alignment.center,
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                new Row(
+    return new Stack(
+      children: <Widget>[
+        new Scaffold(
+          key: _timerKey,
+          body: new Stack(
+            children: <Widget>[
+              new Container(
+                alignment: Alignment.center,
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    new Expanded(
-                        child: Container(
-                      child: new Text(""),
-                    )),
-                    new RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (widget.timer.functions.isRunning())
-                              widget.timer.functions.stop();
-                            else
-                              widget.timer.functions.start();
-                          });
-                        },
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            (widget.timer.functions.isRunning())
-                                ? Icon(Icons.stop)
-                                : Icon(Icons.play_arrow),
-                            (widget.timer.functions.isRunning())
-                                ? Text("Stop")
-                                : Text("Start"),
-                          ],
+                    new Row(
+                      children: <Widget>[
+                        new Expanded(
+                            child: Container(
+                          child: new Text(""),
                         )),
+                        new RaisedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (widget.timer.functions.isRunning())
+                                  widget.timer.functions.stop();
+                                else
+                                  widget.timer.functions.start();
+                              });
+                            },
+                            child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                (widget.timer.functions.isRunning())
+                                    ? Icon(Icons.stop)
+                                    : Icon(Icons.play_arrow),
+                                (widget.timer.functions.isRunning())
+                                    ? Text("Stop")
+                                    : Text("Start"),
+                              ],
+                            )),
+                        new Container(
+                          width: 16.0,
+                          child: new Text(""),
+                        ),
+                        new RaisedButton(
+                          //color: Theme.of(context).buttonColor,
+                          onPressed: () {
+                            setState(() {
+                              widget.timer.functions.reset();
+                            });
+                          },
+                          child: new Text("Reset"),
+                        ),
+                        new Expanded(
+                            child: Container(
+                          child: new Text(""),
+                        )),
+                      ],
+                    ),
                     new Container(
                       width: 16.0,
                       child: new Text(""),
                     ),
                     new RaisedButton(
-                      //color: Theme.of(context).buttonColor,
                       onPressed: () {
                         setState(() {
-                          widget.timer.functions.reset();
+                          widget.timer.functions.set(
+                            getRandomDuration(
+                                randomSeconds: true,
+                                randomMicroseconds: true,
+                                randomMilliseconds: true),
+                          );
                         });
                       },
-                      child: new Text("Reset"),
+                      child: new Text("Set to Random"),
                     ),
-                    new Expanded(
-                        child: Container(
-                      child: new Text(""),
-                    )),
-                  ],
-                ),
-                new Container(
-                  width: 16.0,
-                  child: new Text(""),
-                ),
-                new RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      widget.timer.functions.set(
-                        getRandomDuration(
-                            randomSeconds: true,
-                            randomMicroseconds: true,
-                            randomMilliseconds: true),
-                      );
-                    });
-                  },
-                  child: new Text("Set to Random"),
-                ),
-                new GestureDetector(
-                    onTap: () => print("Duration Picker Open"),
-                    child: AnimatedWidget(
-                      value: widget.timer.functions.getTimeLeft,
-                      updateRecency: new Duration(
-                          microseconds: ((1 / 60) * 1000 * 1000)
-                              .round()), //60 updates per second
+                    new GestureDetector(
+                        onTap: () => print("Duration Picker Open"),
+                        child: new AnimatedWidget(
+                          value: widget.timer.functions.getTimeLeft,
+                          updateRecency: new Duration(
+                              microseconds: ((1 / 60) * 1000 * 1000)
+                                  .round()), //60 updates per second
+                        ),
                     ),
-                ),
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    new FlatButton(
-                      onPressed: () => showInSnackBar(
-                            _timerKey,
-                            "Original Time",
-                            originalTimeString,
-                          ),
-                      child: new Text("Original Time"),
-                    ),
-                    new Text("="),
-                    new FlatButton(
-                      onPressed: () => showInSnackBar(
-                            _timerKey,
-                            "Time Passed",
-                            timePassedSting,
-                          ),
-                      child: new Text("Time Passed"),
-                    ),
-                    new Text("+"),
-                    new FlatButton(
-                      onPressed: () => showInSnackBar(
-                            _timerKey,
-                            "Time Left",
-                            timeLeftString,
-                          ),
-                      child: new Text("Time Left"),
+                    new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new FlatButton(
+                          onPressed: () => showInSnackBar(
+                                _timerKey,
+                                "Original Time",
+                                originalTimeString,
+                              ),
+                          child: new Text("Original Time"),
+                        ),
+                        new Text("="),
+                        new FlatButton(
+                          onPressed: () => showInSnackBar(
+                                _timerKey,
+                                "Time Passed",
+                                timePassedSting,
+                              ),
+                          child: new Text("Time Passed"),
+                        ),
+                        new Text("+"),
+                        new FlatButton(
+                          onPressed: () => showInSnackBar(
+                                _timerKey,
+                                "Time Left",
+                                timeLeftString,
+                              ),
+                          child: new Text("Time Left"),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            new Align(child: DurationPicker())
+          ],
+        )
+      ],
     );
   }
 }
@@ -260,9 +272,6 @@ class StopwatchExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(
-        title: Text('Stopwatch'),
-      ),
       body: new Stack(
         children: <Widget>[
           stopwatch,
@@ -297,6 +306,9 @@ class _StopwatchUIState extends State<StopwatchUI> {
 
     return new Scaffold(
       key: _stopwatchKey,
+      appBar: AppBar(
+        title: Text('Stopwatch'),
+      ),
       body: new Container(
           alignment: Alignment.center,
           child: new Column(
@@ -406,6 +418,9 @@ class AnimatedWidget extends StatefulWidget {
 }
 
 class _AnimatedWidgetState extends State<AnimatedWidget> {
+
+  dynamic getValue() => widget.value();
+
   @override
   void initState() {
     super.initState();

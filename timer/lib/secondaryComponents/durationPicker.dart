@@ -1,20 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'duration.dart';
 
-import 'package:flutter/cupertino.dart';
-
-class DurationPicker extends StatelessWidget {
-
-  double _kPickerSheetHeight = 216.0;
-  double _kPickerItemHeight = 32.0;
-
+class DurationVars{
+  DurationVars(){
+    days = 365;
+    hours = 23;
+    minutes = 59;
+    seconds = 59;
+    milliseconds = 999;
+    microseconds = 999;
+  }
   int days;
   int hours;
   int minutes;
   int seconds;
   int milliseconds;
   int microseconds;
+}
+
+class DurationPicker extends StatelessWidget {
+
+  final DurationVars vars = new DurationVars();
+  final double _kPickerSheetHeight = 216.0;
+  final double _kPickerItemHeight = 32.0;
+
+  getDays() => vars.days;
+  getHours() => vars.hours;
+  getMinutes() => vars.minutes;
+  getSeconds() => vars.seconds;
+  getMilliseconds() => vars.milliseconds;
+  getMicroseconds() => vars.microseconds;
+
+  setDays(int value) => vars.days = value;
+  setHours(int value) => vars.hours = value;
+  setMinutes(int value) => vars.minutes = value;
+  setSeconds(int value) => vars.seconds = value;
+  setMilliseconds(int value) => vars.milliseconds = value;
+  setMicroseconds(int value) => vars.microseconds = value;
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +51,54 @@ class DurationPicker extends StatelessWidget {
           new Container(
             padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
             color: CupertinoColors.white,
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: new Stack(
               children: <Widget>[
-                new Text(
-                  "Set New Duration",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    new FlatButton(
+                      child: new Text(
+                        "Set New Duration",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: CupertinoColors.black,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    new Text(" "),
+                    new FlatButton(
+                      onPressed: () => print("canceled"),
+                      child: new Text(
+                        "Cancel",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    new FlatButton(
+                      onPressed: () => print("confirmed"),
+                      child: new Text(
+                        "Confirm",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                    new Text(" "),
+                  ],
                 )
               ],
             ),
@@ -56,6 +119,7 @@ class DurationPicker extends StatelessWidget {
             ),
           ),
           new Container(
+            color: CupertinoColors.white,
             height: _kPickerSheetHeight,
             child: new DefaultTextStyle(
               style: const TextStyle(
@@ -71,10 +135,10 @@ class DurationPicker extends StatelessWidget {
                       new Flexible(
                         fit: FlexFit.loose,
                         child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: 365),
+                          scrollController: new FixedExtentScrollController(initialItem: getDays()),
                           itemExtent: _kPickerItemHeight,
                           backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => days = index,
+                          onSelectedItemChanged: (int index) => setDays(index),
                           children: new List<Widget>.generate(366, (int index) {
                             return new Center(child:
                             new Text((index).toString()),
@@ -85,11 +149,11 @@ class DurationPicker extends StatelessWidget {
                       new Flexible(
                         fit: FlexFit.tight,
                         child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: 24),
+                          scrollController: new FixedExtentScrollController(initialItem: getHours()),
                           itemExtent: _kPickerItemHeight,
                           backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => hours = index,
-                          children: new List<Widget>.generate(25, (int index) {
+                          onSelectedItemChanged: (int index) => setHours(index),
+                          children: new List<Widget>.generate(24, (int index) {
                             return new Center(child:
                             new Text((index).toString()),
                             );
@@ -99,11 +163,11 @@ class DurationPicker extends StatelessWidget {
                       new Flexible(
                         fit: FlexFit.tight,
                         child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: 60),
+                          scrollController: new FixedExtentScrollController(initialItem: getMinutes()),
                           itemExtent: _kPickerItemHeight,
                           backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => minutes = index,
-                          children: new List<Widget>.generate(61, (int index) {
+                          onSelectedItemChanged: (int index) => setMinutes(index),
+                          children: new List<Widget>.generate(60, (int index) {
                             return new Center(child:
                             new Text((index).toString()),
                             );
@@ -113,11 +177,11 @@ class DurationPicker extends StatelessWidget {
                       new Flexible(
                         fit: FlexFit.tight,
                         child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: 60),
+                          scrollController: new FixedExtentScrollController(initialItem: getSeconds()),
                           itemExtent: _kPickerItemHeight,
                           backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => seconds = index,
-                          children: new List<Widget>.generate(61, (int index) {
+                          onSelectedItemChanged: (int index) => setSeconds(index),
+                          children: new List<Widget>.generate(60, (int index) {
                             return new Center(child:
                             new Text((index).toString()),
                             );
@@ -127,11 +191,11 @@ class DurationPicker extends StatelessWidget {
                       new Flexible(
                         fit: FlexFit.tight,
                         child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: 1000),
+                          scrollController: new FixedExtentScrollController(initialItem: getMilliseconds()),
                           itemExtent: _kPickerItemHeight,
                           backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => milliseconds = index,
-                          children: new List<Widget>.generate(1001, (int index) {
+                          onSelectedItemChanged: (int index) => setMilliseconds(index),
+                          children: new List<Widget>.generate(1000, (int index) {
                             return new Center(child:
                             new Text((index).toString()),
                             );
@@ -141,11 +205,11 @@ class DurationPicker extends StatelessWidget {
                       new Flexible(
                         fit: FlexFit.tight,
                         child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: 1000),
+                          scrollController: new FixedExtentScrollController(initialItem: getMicroseconds()),
                           itemExtent: _kPickerItemHeight,
                           backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => microseconds = index,
-                          children: new List<Widget>.generate(1001, (int index) {
+                          onSelectedItemChanged: (int index) => setMicroseconds(index),
+                          children: new List<Widget>.generate(1000, (int index) {
                             return new Center(child:
                             new Text((index).toString()),
                             );
