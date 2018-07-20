@@ -33,6 +33,20 @@ class DurationPicker extends StatelessWidget {
   final int minSecondSpaces;
   final int minMillisecondSpaces;
   final int minMicrosecondSpaces;
+  //---max duration values(exclusive)
+  final int maxDaysExclusive;
+  final int maxHoursExclusive;
+  final int maxMinutesExclusive;
+  final int maxSecondsExclusive;
+  final int maxMillisecondsExclusive;
+  final int maxMicrosecondsExclusive;
+  //---min duration values(inclusive)
+  final int minDaysInclusive;
+  final int minHoursInclusive;
+  final int minMinutesInclusive;
+  final int minSecondsInclusive;
+  final int minMillisecondsInclusive;
+  final int minMicrosecondsInclusive;
   //---picker params
   final double pickerSize;
   final double pickerItemSize;
@@ -69,6 +83,20 @@ class DurationPicker extends StatelessWidget {
     this.minSecondSpaces: 2,
     this.minMillisecondSpaces: 3,
     this.minMicrosecondSpaces: 3,
+    //---max duration values
+    this.maxDaysExclusive: 100,
+    this.maxHoursExclusive: 24,
+    this.maxMinutesExclusive: 60,
+    this.maxSecondsExclusive: 60,
+    this.maxMillisecondsExclusive: 1000,
+    this.maxMicrosecondsExclusive: 1000,
+    //---min duration values
+    this.minDaysInclusive: 0,
+    this.minHoursInclusive: 0,
+    this.minMinutesInclusive: 0,
+    this.minSecondsInclusive: 0,
+    this.minMillisecondsInclusive: 0,
+    this.minMicrosecondsInclusive: 0,
     //---picker params
     this.pickerSize: 99.9,
     this.pickerItemSize: 33.3,
@@ -211,7 +239,8 @@ class DurationPicker extends StatelessWidget {
                         days,
                         durationTimeType.days,
                         minDaySpaces,
-                        100,
+                        minDaysInclusive,
+                        maxDaysExclusive,
                       )
                     : new Text(""),
                 (showHours)
@@ -219,7 +248,8 @@ class DurationPicker extends StatelessWidget {
                         hours,
                         durationTimeType.hours,
                         minHourSpaces,
-                        24,
+                        minHoursInclusive,
+                        maxHoursExclusive,
                       )
                     : new Text(""),
                 (showMinutes)
@@ -227,7 +257,8 @@ class DurationPicker extends StatelessWidget {
                         minutes,
                         durationTimeType.minutes,
                         minMinuteSpaces,
-                        60,
+                        minMinutesInclusive,
+                        maxMinutesExclusive,
                       )
                     : new Text(""),
                 (showSeconds)
@@ -235,7 +266,8 @@ class DurationPicker extends StatelessWidget {
                         seconds,
                         durationTimeType.seconds,
                         minSecondSpaces,
-                        60,
+                        minSecondsInclusive,
+                        maxSecondsExclusive,
                       )
                     : new Text(""),
                 (showMilliseconds)
@@ -243,7 +275,8 @@ class DurationPicker extends StatelessWidget {
                         milliseconds,
                         durationTimeType.milliseconds,
                         minMillisecondSpaces,
-                        1000,
+                        minMillisecondsInclusive,
+                        maxMillisecondsExclusive,
                       )
                     : new Text(""),
                 (showMicroseconds)
@@ -251,7 +284,8 @@ class DurationPicker extends StatelessWidget {
                         microseconds,
                         durationTimeType.microseconds,
                         minMicrosecondSpaces,
-                        1000,
+                        minMicrosecondsInclusive,
+                        maxMicrosecondsExclusive,
                       )
                     : new Text(""),
               ],
@@ -278,7 +312,19 @@ class DurationPicker extends StatelessWidget {
   }
 
   Flexible durationPicker(
-      int initItem, durationTimeType dType, int leastLength, int maxItems) {
+    int initItem,
+    durationTimeType dType,
+    int leastLength,
+    int minValue,
+    int maxValue,
+  ) {
+
+    int numberOfItems = 0;
+    if(minValue < maxValue)
+      numberOfItems = (maxValue - minValue).abs();
+    else
+      print("ERROR minValue >= maxValue");
+
     return new Flexible(
       child: new CupertinoPicker(
         diameterRatio: pickerDiameterRatio,
@@ -308,10 +354,10 @@ class DurationPicker extends StatelessWidget {
               break;
           }
         },
-        children: new List<Widget>.generate(maxItems, (int index) {
+        children: new List<Widget>.generate(numberOfItems, (int index) {
           return new Center(
             child: new Text(
-              atleastLengthOfn(index, leastLength),
+              atleastLengthOfn(minValue + index, leastLength),
               style: pickerTextStyle,
             ),
           );
