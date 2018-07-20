@@ -9,14 +9,19 @@ import 'package:timer/primaryComponents/stopwatch.dart' as stopwatchWidget;
 
 import 'package:timer/secondaryComponents/duration.dart';
 import 'package:timer/secondaryComponents/durationPicker.dart';
-import 'package:timer/secondaryComponents/materialSheet.dart';
 
 //days, hours, minutes, seconds, milliseconds, microseconds
 
 void main() {
   //Force App In Portrait Mode
+  /*
   SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    [
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ],
+  );
+  */
 
   //Run our App
   runApp(
@@ -135,30 +140,30 @@ class _TimerUIState extends State<TimerUI> {
           new Row(
             children: <Widget>[
               new Expanded(
-                  child: Container(
-                    child: new Text(""),
-                  ),
+                child: Container(
+                  child: new Text(""),
+                ),
               ),
               new RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (widget.timer.functions.isRunning())
-                        widget.timer.functions.stop();
-                      else
-                        widget.timer.functions.start();
-                    });
-                  },
-                  child: new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      (widget.timer.functions.isRunning())
-                          ? Icon(Icons.stop)
-                          : Icon(Icons.play_arrow),
-                      (widget.timer.functions.isRunning())
-                          ? Text("Stop")
-                          : Text("Start"),
-                    ],
-                  ),
+                onPressed: () {
+                  setState(() {
+                    if (widget.timer.functions.isRunning())
+                      widget.timer.functions.stop();
+                    else
+                      widget.timer.functions.start();
+                  });
+                },
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    (widget.timer.functions.isRunning())
+                        ? Icon(Icons.stop)
+                        : Icon(Icons.play_arrow),
+                    (widget.timer.functions.isRunning())
+                        ? Text("Stop")
+                        : Text("Start"),
+                  ],
+                ),
               ),
               new Container(
                 width: 16.0,
@@ -203,7 +208,7 @@ class _TimerUIState extends State<TimerUI> {
                 builder: (BuildContext context) {
                   picker = new DurationPicker(
                     initialDuration: widget.timer.functions.getOriginalTime(),
-                    onConfirm: (){
+                    onConfirm: () {
                       widget.timer.functions.set(picker.getDuration());
                       Navigator.pop(context);
                     },
@@ -215,8 +220,8 @@ class _TimerUIState extends State<TimerUI> {
             child: new AnimatedWidget(
               value: widget.timer.functions.getTimeLeft,
               updateRecency: new Duration(
-                  microseconds: ((1 / 60) * 1000 * 1000)
-                      .round()), //60 updates per second
+                  microseconds:
+                      ((1 / 60) * 1000 * 1000).round()), //60 updates per second
             ),
           ),
           new Row(
@@ -224,28 +229,31 @@ class _TimerUIState extends State<TimerUI> {
             children: <Widget>[
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                  _timerKey,
-                  "Original Time",
-                  getStringFromDuration(widget.timer.functions.getOriginalTime()),
-                ),
+                      _timerKey,
+                      "Original Time",
+                      getStringFromDuration(
+                          widget.timer.functions.getOriginalTime()),
+                    ),
                 child: new Text("Original Time"),
               ),
               new Text("="),
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                  _timerKey,
-                  "Time Passed",
-                  getStringFromDuration(widget.timer.functions.getTimePassed()),
-                ),
+                      _timerKey,
+                      "Time Passed",
+                      getStringFromDuration(
+                          widget.timer.functions.getTimePassed()),
+                    ),
                 child: new Text("Time Passed"),
               ),
               new Text("+"),
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                  _timerKey,
-                  "Time Left",
-                  getStringFromDuration(widget.timer.functions.getTimeLeft()),
-                ),
+                      _timerKey,
+                      "Time Left",
+                      getStringFromDuration(
+                          widget.timer.functions.getTimeLeft()),
+                    ),
                 child: new Text("Time Left"),
               ),
             ],
