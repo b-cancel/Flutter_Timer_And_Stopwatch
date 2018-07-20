@@ -212,6 +212,7 @@ class _TimerUIState extends State<TimerUI> {
                       widget.timer.functions.set(picker.getDuration());
                       Navigator.pop(context);
                     },
+                    onCancel: () => Navigator.pop(context),
                   );
                   return picker;
                 },

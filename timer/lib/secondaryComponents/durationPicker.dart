@@ -5,27 +5,99 @@ import 'duration.dart';
 
 import 'dart:math';
 
+enum durationTimeType {
+  days,
+  hours,
+  minutes,
+  seconds,
+  milliseconds,
+  microseconds,
+}
+
 class DurationPicker extends StatelessWidget {
-  final double pickerSize;
-  final double pickerItemSize;
+  //---functional params
   final Duration initialDuration;
   final Function onConfirm;
-  //---
+  final Function onCancel;
+  //---switch params
+  final bool showDays;
+  final bool showHours;
+  final bool showMinutes;
+  final bool showSeconds;
+  final bool showMilliseconds;
+  final bool showMicroseconds;
+  //---duration value sizes
+  final int minDaySpaces;
+  final int minHourSpaces;
+  final int minMinuteSpaces;
+  final int minSecondSpaces;
+  final int minMillisecondSpaces;
+  final int minMicrosecondSpaces;
+  //---picker params
+  final double pickerSize;
+  final double pickerItemSize;
+  final Color pickerBackgroundColor;
+  final double pickerDiameterRatio;
   final TextStyle pickerTextStyle;
+  //---label params
+  final TextStyle labelTextStyle;
+  final Color labelBackgroundColor;
+  //---other params
+  final Color topBarColor;
+  final TextStyle titleTextStyle;
+  final String titleText;
+  final TextStyle buttonTextStyle;
+  final String leftButtonText;
+  final String rightButtonText;
 
   DurationPicker({
-    this.pickerSize: 99.9,
-    this.pickerItemSize: 33.3,
+    //---functional params
     @required this.initialDuration,
     @required this.onConfirm,
-    //---
-    this.pickerTextStyle = const TextStyle(
+    @required this.onCancel,
+    //---functional switch params
+    this.showDays: true,
+    this.showHours: true,
+    this.showMinutes: true,
+    this.showSeconds: true,
+    this.showMilliseconds: true,
+    this.showMicroseconds: true,
+    //---duration value sizes
+    this.minDaySpaces: 2,
+    this.minHourSpaces: 2,
+    this.minMinuteSpaces: 2,
+    this.minSecondSpaces: 2,
+    this.minMillisecondSpaces: 3,
+    this.minMicrosecondSpaces: 3,
+    //---picker params
+    this.pickerSize: 99.9,
+    this.pickerItemSize: 33.3,
+    this.pickerBackgroundColor: CupertinoColors.white,
+    this.pickerDiameterRatio: 1.1,
+    this.pickerTextStyle: const TextStyle(
       color: CupertinoColors.black,
       fontSize: 22.0,
     ),
+    //---label params
+    this.labelTextStyle: const TextStyle(color: CupertinoColors.black),
+    this.labelBackgroundColor: CupertinoColors.white,
+    //---other params
+    this.topBarColor: CupertinoColors.white,
+    this.titleTextStyle: const TextStyle(
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+      color: CupertinoColors.black,
+    ),
+    this.titleText: "Set New Duration",
+    this.buttonTextStyle: const TextStyle(
+      fontSize: 18.0,
+      color: Colors.blue,
+    ),
+    this.leftButtonText: "Cancel",
+    this.rightButtonText: "Confirm",
   });
 
-  int days; //365 max
+  int days; //INFINITY max
   int hours; //23 max
   int minutes; //59 max
   int seconds; //59 max
@@ -53,229 +125,197 @@ class DurationPicker extends StatelessWidget {
     milliseconds = formattedDuration[4];
     microseconds = formattedDuration[5];
 
-    Flexible pickerDays = new Flexible(
-      child: new CupertinoPicker(
-        scrollController: new FixedExtentScrollController(initialItem: days),
-        itemExtent: pickerItemSize,
-        backgroundColor: CupertinoColors.white,
-        onSelectedItemChanged: (int index) => days = index,
-        children: new List<Widget>.generate(100, (int index) {
-          return new Center(
-            child: new Text(atleastLengthOfn(index, 2)),
-          );
-        }),
-      ),
-    );
-
-    Flexible pickerHours = new Flexible(
-      child: new CupertinoPicker(
-        scrollController: new FixedExtentScrollController(initialItem: hours),
-        itemExtent: pickerItemSize,
-        backgroundColor: CupertinoColors.white,
-        onSelectedItemChanged: (int index) => hours = index,
-        children: new List<Widget>.generate(24, (int index) {
-          return new Center(
-            child: new Text(atleastLengthOfn(index, 2)),
-          );
-        }),
-      ),
-    );
-
-    Flexible pickerMinutes = new Flexible(
-      child: new CupertinoPicker(
-        scrollController: new FixedExtentScrollController(initialItem: minutes),
-        itemExtent: pickerItemSize,
-        backgroundColor: CupertinoColors.white,
-        onSelectedItemChanged: (int index) => minutes = index,
-        children: new List<Widget>.generate(60, (int index) {
-          return new Center(
-            child: new Text(atleastLengthOfn(index, 2)),
-          );
-        }),
-      ),
-    );
-
-    Flexible pickerSeconds = new Flexible(
-      child: new CupertinoPicker(
-        scrollController: new FixedExtentScrollController(initialItem: seconds),
-        itemExtent: pickerItemSize,
-        backgroundColor: CupertinoColors.white,
-        onSelectedItemChanged: (int index) => seconds = index,
-        children: new List<Widget>.generate(60, (int index) {
-          return new Center(
-            child: new Text(atleastLengthOfn(index, 2)),
-          );
-        }),
-      ),
-    );
-
-    Flexible pickerMilliseconds = new Flexible(
-      child: new CupertinoPicker(
-        scrollController:
-            new FixedExtentScrollController(initialItem: milliseconds),
-        itemExtent: pickerItemSize,
-        backgroundColor: CupertinoColors.white,
-        onSelectedItemChanged: (int index) => milliseconds = index,
-        children: new List<Widget>.generate(1000, (int index) {
-          return new Center(
-            child: new Text(atleastLengthOfn(index, 3)),
-          );
-        }),
-      ),
-    );
-
-    Flexible pickerMicroseconds = new Flexible(
-      child: new CupertinoPicker(
-        scrollController:
-            new FixedExtentScrollController(initialItem: microseconds),
-        itemExtent: pickerItemSize,
-        backgroundColor: CupertinoColors.white,
-        onSelectedItemChanged: (int index) => microseconds = index,
-        children: new List<Widget>.generate(1000, (int index) {
-          return new Center(
-            child: new Text(atleastLengthOfn(index, 3)),
-          );
-        }),
-      ),
-    );
-
     return new GestureDetector(
-      // Blocks Modal Sheet Behavior (hides slow animation as a cause of the heavy flutter picker code)
+      //-----Blocks Modal Sheet Behavior
+      // (hides slow animation as a cause of the heavy flutter picker code)
       behavior: HitTestBehavior.opaque,
       onTap: () {},
       onVerticalDragStart: (DragStartDetails d) {},
-      child: new DefaultTextStyle(
-        style: TextStyle(
-          color: CupertinoColors.black,
-        ),
-        child: new Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            new Container(
-              color: CupertinoColors.white,
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: new Stack(
-                children: <Widget>[
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      new FlatButton(
-                        onPressed: null,
-                        child: new Text(
-                          "Set New Duration",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                            color: CupertinoColors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(" "),
-                      new FlatButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: new Text(
-                          "Cancel",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      new FlatButton(
-                        onPressed: () => onConfirm(),
-                        child: new Text(
-                          "Confirm",
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ),
-                      new Text(" "),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            new Container(
-              color: CupertinoColors.destructiveRed,
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: new Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  new Expanded(
-                    child: new Container(
-                      color: Colors.red,
-                      alignment: Alignment.center,
-                      child: new Text("days"),
-                    ),
-                  ),
-                  new Expanded(
-                    child: new Container(
-                      color: Colors.blue,
-                      alignment: Alignment.center,
-                      child: new Text("hours"),
-                    ),
-                  ),
-                  new Expanded(
-                    child: new Container(
-                      color: Colors.red,
-                      alignment: Alignment.center,
-                      child: new Text("minutes"),
-                    ),
-                  ),
-                  new Expanded(
-                    child: new Container(
-                      color: Colors.blue,
-                      alignment: Alignment.center,
-                      child: new Text("seconds"),
-                    ),
-                  ),
-                  new Expanded(
-                    child: new Container(
-                      color: Colors.red,
-                      alignment: Alignment.center,
-                      child: new Text("millisecs"),
-                    ),
-                  ),
-                  new Expanded(
-                    child: new Container(
-                      color: Colors.blue,
-                      alignment: Alignment.center,
-                      child: new Text("microsecs."),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            new Container(
-              height: pickerSize,
-              child: new DefaultTextStyle(
-                style: pickerTextStyle,
-                child: new Row(
+      //-----Other
+      child: new Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Container(
+            color: topBarColor,
+            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+            child: new Stack(
+              children: <Widget>[
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    pickerDays,
-                    pickerHours,
-                    pickerMinutes,
-                    pickerSeconds,
-                    pickerMilliseconds,
-                    pickerMicroseconds,
+                    new FlatButton(
+                      onPressed: null,
+                      child: new Text(
+                        titleText,
+                        style: titleTextStyle,
+                      ),
+                    ),
                   ],
                 ),
-              ),
+                new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    new FlatButton(
+                      onPressed: () => onCancel(),
+                      child: new Text(
+                        leftButtonText,
+                        style: buttonTextStyle,
+                      ),
+                    ),
+                    new FlatButton(
+                      onPressed: () => onConfirm(),
+                      child: new Text(
+                        rightButtonText,
+                        style: buttonTextStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
+          new Row(
+            children: <Widget>[
+              (showDays)
+                  ? durationPickerLabel(
+                      durationTimeType.days.toString().split('.')[1])
+                  : new Text(""),
+              (showHours)
+                  ? durationPickerLabel(
+                      durationTimeType.hours.toString().split('.')[1])
+                  : new Text(""),
+              (showMinutes)
+                  ? durationPickerLabel(
+                      durationTimeType.minutes.toString().split('.')[1])
+                  : new Text(""),
+              (showSeconds)
+                  ? durationPickerLabel(
+                      durationTimeType.seconds.toString().split('.')[1])
+                  : new Text(""),
+              (showMilliseconds)
+                  ? durationPickerLabel(
+                      durationTimeType.milliseconds.toString().split('.')[1])
+                  : new Text(""),
+              (showMicroseconds)
+                  ? durationPickerLabel(
+                      durationTimeType.microseconds.toString().split('.')[1])
+                  : new Text(""),
+            ],
+          ),
+          new Container(
+            height: pickerSize,
+            child: new Row(
+              children: <Widget>[
+                (showDays)
+                    ? durationPicker(
+                        days,
+                        durationTimeType.days,
+                        minDaySpaces,
+                        100,
+                      )
+                    : new Text(""),
+                (showHours)
+                    ? durationPicker(
+                        hours,
+                        durationTimeType.hours,
+                        minHourSpaces,
+                        24,
+                      )
+                    : new Text(""),
+                (showMinutes)
+                    ? durationPicker(
+                        minutes,
+                        durationTimeType.minutes,
+                        minMinuteSpaces,
+                        60,
+                      )
+                    : new Text(""),
+                (showSeconds)
+                    ? durationPicker(
+                        seconds,
+                        durationTimeType.seconds,
+                        minSecondSpaces,
+                        60,
+                      )
+                    : new Text(""),
+                (showMilliseconds)
+                    ? durationPicker(
+                        milliseconds,
+                        durationTimeType.milliseconds,
+                        minMillisecondSpaces,
+                        1000,
+                      )
+                    : new Text(""),
+                (showMicroseconds)
+                    ? durationPicker(
+                        microseconds,
+                        durationTimeType.microseconds,
+                        minMicrosecondSpaces,
+                        1000,
+                      )
+                    : new Text(""),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Expanded durationPickerLabel(String label) {
+    return new Expanded(
+      child: new Container(
+        color: labelBackgroundColor,
+        padding: EdgeInsets.all(2.0),
+        alignment: Alignment.center,
+        child: new Text(
+          label,
+          maxLines: 1,
+          style: labelTextStyle,
         ),
+      ),
+    );
+  }
+
+  Flexible durationPicker(
+      int initItem, durationTimeType dType, int leastLength, int maxItems) {
+    return new Flexible(
+      child: new CupertinoPicker(
+        diameterRatio: pickerDiameterRatio,
+        backgroundColor: pickerBackgroundColor,
+        scrollController:
+            new FixedExtentScrollController(initialItem: initItem),
+        itemExtent: pickerItemSize,
+        onSelectedItemChanged: (int index) {
+          switch (dType) {
+            case durationTimeType.days:
+              days = index;
+              break;
+            case durationTimeType.hours:
+              hours = index;
+              break;
+            case durationTimeType.minutes:
+              minutes = index;
+              break;
+            case durationTimeType.seconds:
+              seconds = index;
+              break;
+            case durationTimeType.milliseconds:
+              milliseconds = index;
+              break;
+            default:
+              microseconds = index;
+              break;
+          }
+        },
+        children: new List<Widget>.generate(maxItems, (int index) {
+          return new Center(
+            child: new Text(
+              atleastLengthOfn(index, leastLength),
+              style: pickerTextStyle,
+            ),
+          );
+        }),
       ),
     );
   }
