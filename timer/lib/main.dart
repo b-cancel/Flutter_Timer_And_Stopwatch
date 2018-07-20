@@ -1,16 +1,12 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:timer/primaryComponents/timer.dart' as timerWidget;
 import 'package:timer/primaryComponents/stopwatch.dart' as stopwatchWidget;
 
 import 'package:timer/secondaryComponents/duration.dart';
 import 'package:timer/secondaryComponents/durationPicker.dart';
-
-//days, hours, minutes, seconds, milliseconds, microseconds
 
 void main() {
   //Force App In Portrait Mode
@@ -299,6 +295,8 @@ class StopwatchUI extends StatefulWidget {
 class _StopwatchUIState extends State<StopwatchUI> {
   final GlobalKey<ScaffoldState> _stopwatchKey = new GlobalKey<ScaffoldState>();
 
+  DurationPicker picker;
+
   @override
   Widget build(BuildContext context) {
     List timePassedList =
@@ -361,7 +359,22 @@ class _StopwatchUIState extends State<StopwatchUI> {
                 ],
               ),
               new GestureDetector(
-                onTap: () => print("Duration Picker Open"),
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      picker = new DurationPicker(
+                        initialDuration: widget.stopwatch.functions.getMaxTime(),
+                        onConfirm: () {
+                          widget.stopwatch.functions.setMaxTime(picker.getDuration());
+                          Navigator.pop(context);
+                        },
+                        onCancel: () => Navigator.pop(context),
+                      );
+                      return picker;
+                    },
+                  );
+                },
                 child: AnimatedWidget(
                   value: widget.stopwatch.functions.getTimePassed,
                   updateRecency: new Duration(
