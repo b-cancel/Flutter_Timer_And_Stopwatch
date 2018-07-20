@@ -3,60 +3,140 @@ import 'package:flutter/cupertino.dart';
 
 import 'duration.dart';
 
-class DurationVars{
-  DurationVars(){
-    days = 365;
-    hours = 23;
-    minutes = 59;
-    seconds = 59;
-    milliseconds = 999;
-    microseconds = 999;
-  }
-  int days;
-  int hours;
-  int minutes;
-  int seconds;
-  int milliseconds;
-  int microseconds;
-}
+import 'dart:math';
 
 class DurationPicker extends StatelessWidget {
 
-  final DurationVars vars = new DurationVars();
+  final Duration initialDuration;
+  final Function onConfirm;
+
+  DurationPicker({
+    @required this.initialDuration,
+    @required this.onConfirm,
+  });
+
   final double _kPickerSheetHeight = 216.0;
   final double _kPickerItemHeight = 32.0;
 
-  getDays() => vars.days;
-  getHours() => vars.hours;
-  getMinutes() => vars.minutes;
-  getSeconds() => vars.seconds;
-  getMilliseconds() => vars.milliseconds;
-  getMicroseconds() => vars.microseconds;
+  //TODO... eliminate the use of these non final variables by using stateful pickers that allow me to retreive the last selected value (or the initial value if the value didn't change)
+  int days; //365 max
+  int hours; //23 max
+  int minutes; //59 max
+  int seconds; //59 max
+  int milliseconds; //999 max
+  int microseconds; //999 max
 
-  setDays(int value) => vars.days = value;
-  setHours(int value) => vars.hours = value;
-  setMinutes(int value) => vars.minutes = value;
-  setSeconds(int value) => vars.seconds = value;
-  setMilliseconds(int value) => vars.milliseconds = value;
-  setMicroseconds(int value) => vars.microseconds = value;
+  getDuration(){
+    return new Duration(
+      days: days,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds,
+      milliseconds: milliseconds,
+      microseconds: microseconds,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    List formattedDuration = getFormattedDuration(initialDuration);
+    days = formattedDuration[0];
+    hours = formattedDuration[1];
+    minutes = formattedDuration[2];
+    seconds = formattedDuration[3];
+    milliseconds = formattedDuration[4];
+    microseconds = formattedDuration[5];
+
+    CupertinoPicker pickerDays = new CupertinoPicker(
+      scrollController: new FixedExtentScrollController(initialItem: days),
+      itemExtent: _kPickerItemHeight,
+      backgroundColor: CupertinoColors.white,
+      onSelectedItemChanged: (int index) => days = index,
+      children: new List<Widget>.generate(100, (int index) {
+        return new Center(child:
+        new Text(atleastLengthOfn(index, 2)),
+        );
+      }),
+    );
+
+    CupertinoPicker pickerHours = new CupertinoPicker(
+      scrollController: new FixedExtentScrollController(initialItem: hours),
+      itemExtent: _kPickerItemHeight,
+      backgroundColor: CupertinoColors.white,
+      onSelectedItemChanged: (int index) => hours = index,
+      children: new List<Widget>.generate(24, (int index) {
+        return new Center(child:
+        new Text(atleastLengthOfn(index, 2)),
+        );
+      }),
+    );
+
+    CupertinoPicker pickerMinutes = new CupertinoPicker(
+      scrollController: new FixedExtentScrollController(initialItem: minutes),
+      itemExtent: _kPickerItemHeight,
+      backgroundColor: CupertinoColors.white,
+      onSelectedItemChanged: (int index) => minutes = index,
+      children: new List<Widget>.generate(60, (int index) {
+        return new Center(child:
+        new Text(atleastLengthOfn(index, 2)),
+        );
+      }),
+    );
+
+    CupertinoPicker pickerSeconds = new CupertinoPicker(
+      scrollController: new FixedExtentScrollController(initialItem: seconds),
+      itemExtent: _kPickerItemHeight,
+      backgroundColor: CupertinoColors.white,
+      onSelectedItemChanged: (int index) => seconds = index,
+      children: new List<Widget>.generate(60, (int index) {
+        return new Center(child:
+        new Text(atleastLengthOfn(index, 2)),
+        );
+      }),
+    );
+
+    CupertinoPicker pickerMilliseconds = new CupertinoPicker(
+      scrollController: new FixedExtentScrollController(initialItem: milliseconds),
+      itemExtent: _kPickerItemHeight,
+      backgroundColor: CupertinoColors.white,
+      onSelectedItemChanged: (int index) => milliseconds = index,
+      children: new List<Widget>.generate(1000, (int index) {
+        return new Center(child:
+        new Text(atleastLengthOfn(index, 3)),
+        );
+      }),
+    );
+
+    CupertinoPicker pickerMicroseconds = new CupertinoPicker(
+      scrollController: new FixedExtentScrollController(initialItem: microseconds),
+      itemExtent: _kPickerItemHeight,
+      backgroundColor: CupertinoColors.white,
+      onSelectedItemChanged: (int index) => microseconds = index,
+      children: new List<Widget>.generate(1000, (int index) {
+        return new Center(child:
+        new Text(atleastLengthOfn(index, 3)),
+        );
+      }),
+    );
+
     return new DefaultTextStyle(
       style: TextStyle(
         color: CupertinoColors.black,
       ),
       child: new Column(
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Container(
-            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
             color: CupertinoColors.white,
+            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
             child: new Stack(
               children: <Widget>[
                 new Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     new FlatButton(
+                      onPressed: null,
                       child: new Text(
                         "Set New Duration",
                         style: TextStyle(
@@ -73,7 +153,7 @@ class DurationPicker extends StatelessWidget {
                   children: <Widget>[
                     new Text(" "),
                     new FlatButton(
-                      onPressed: () => print("canceled"),
+                      onPressed: () => Navigator.pop(context),
                       child: new Text(
                         "Cancel",
                         style: TextStyle(
@@ -88,7 +168,7 @@ class DurationPicker extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     new FlatButton(
-                      onPressed: () => print("confirmed"),
+                      onPressed: () => onConfirm(),
                       child: new Text(
                         "Confirm",
                         style: TextStyle(
@@ -104,8 +184,8 @@ class DurationPicker extends StatelessWidget {
             ),
           ),
           new Container(
-            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
             color: CupertinoColors.white,
+            padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
             child: new Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -119,7 +199,6 @@ class DurationPicker extends StatelessWidget {
             ),
           ),
           new Container(
-            color: CupertinoColors.white,
             height: _kPickerSheetHeight,
             child: new DefaultTextStyle(
               style: const TextStyle(
@@ -129,95 +208,33 @@ class DurationPicker extends StatelessWidget {
               child: new GestureDetector(
                 // Blocks taps from propagating to the modal sheet and popping.
                 onTap: () {},
-                child: new SafeArea(
-                  child: new Row(
-                    children: <Widget>[
-                      new Flexible(
-                        fit: FlexFit.loose,
-                        child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: getDays()),
-                          itemExtent: _kPickerItemHeight,
-                          backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => setDays(index),
-                          children: new List<Widget>.generate(366, (int index) {
-                            return new Center(child:
-                            new Text((index).toString()),
-                            );
-                          }),
-                        ),
-                      ),
-                      new Flexible(
+                child: new Row(
+                  children: <Widget>[
+                    new Flexible(
+                      fit: FlexFit.tight,
+                      child: pickerDays,
+                    ),
+                    new Flexible(
+                      fit: FlexFit.tight,
+                      child: pickerHours,
+                    ),
+                    new Flexible(
+                      fit: FlexFit.tight,
+                      child: pickerMinutes,
+                    ),
+                    new Flexible(
                         fit: FlexFit.tight,
-                        child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: getHours()),
-                          itemExtent: _kPickerItemHeight,
-                          backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => setHours(index),
-                          children: new List<Widget>.generate(24, (int index) {
-                            return new Center(child:
-                            new Text((index).toString()),
-                            );
-                          }),
-                        ),
-                      ),
-                      new Flexible(
+                        child: pickerSeconds
+                    ),
+                    new Flexible(
+                      fit: FlexFit.tight,
+                      child: pickerMilliseconds,
+                    ),
+                    new Flexible(
                         fit: FlexFit.tight,
-                        child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: getMinutes()),
-                          itemExtent: _kPickerItemHeight,
-                          backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => setMinutes(index),
-                          children: new List<Widget>.generate(60, (int index) {
-                            return new Center(child:
-                            new Text((index).toString()),
-                            );
-                          }),
-                        ),
-                      ),
-                      new Flexible(
-                        fit: FlexFit.tight,
-                        child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: getSeconds()),
-                          itemExtent: _kPickerItemHeight,
-                          backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => setSeconds(index),
-                          children: new List<Widget>.generate(60, (int index) {
-                            return new Center(child:
-                            new Text((index).toString()),
-                            );
-                          }),
-                        ),
-                      ),
-                      new Flexible(
-                        fit: FlexFit.tight,
-                        child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: getMilliseconds()),
-                          itemExtent: _kPickerItemHeight,
-                          backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => setMilliseconds(index),
-                          children: new List<Widget>.generate(1000, (int index) {
-                            return new Center(child:
-                            new Text((index).toString()),
-                            );
-                          }),
-                        ),
-                      ),
-                      new Flexible(
-                        fit: FlexFit.tight,
-                        child: new CupertinoPicker(
-                          scrollController: new FixedExtentScrollController(initialItem: getMicroseconds()),
-                          itemExtent: _kPickerItemHeight,
-                          backgroundColor: CupertinoColors.white,
-                          onSelectedItemChanged: (int index) => setMicroseconds(index),
-                          children: new List<Widget>.generate(1000, (int index) {
-                            return new Center(child:
-                            new Text((index).toString()),
-                            );
-                          }),
-                        ),
-                      ),
-                    ],
-                  ),
+                        child: pickerMicroseconds
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -227,3 +244,32 @@ class DurationPicker extends StatelessWidget {
     );
   }
 }
+
+/*
+class Picker extends StatelessWidget {
+
+  final itemHeight;
+  final initialItem;
+
+  Picker({
+
+  });
+
+  final tino = new CupertinoPicker(
+    scrollController: new FixedExtentScrollController(initialItem: days),
+    itemExtent: _kPickerItemHeight,
+    backgroundColor: CupertinoColors.white,
+    onSelectedItemChanged: (int index) => days = index,
+    children: new List<Widget>.generate(366, (int index) {
+      return new Center(child:
+      new Text(atleastLengthOfn(index, 3)),
+      );
+    }),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return tino;
+  }
+}
+*/

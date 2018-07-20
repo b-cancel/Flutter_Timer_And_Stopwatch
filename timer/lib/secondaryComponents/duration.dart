@@ -53,3 +53,10 @@ Duration getRandomDuration({
     microseconds: (randomMicroseconds) ? rand.nextInt(1000) : 0,
   );
 }
+
+String atleastLengthOfn(int num, int minLength) {
+  String numStr = num.toString();
+  int added0s = minLength - numStr.length;
+  for (int i = added0s; i > 0; i--) numStr = "0" + numStr;
+  return numStr;
+}
