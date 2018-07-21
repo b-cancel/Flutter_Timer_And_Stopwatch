@@ -180,23 +180,6 @@ class _TimerUIState extends State<TimerUI> {
               ),
             ],
           ),
-          new Container(
-            width: 16.0,
-            child: new Text(""),
-          ),
-          new RaisedButton(
-            onPressed: () {
-              setState(() {
-                widget.timer.functions.set(
-                  getRandomDuration(
-                      randomSeconds: true,
-                      randomMicroseconds: true,
-                      randomMilliseconds: true),
-                );
-              });
-            },
-            child: new Text("Set to Random"),
-          ),
           new GestureDetector(
             onTap: () {
               showModalBottomSheet<void>(
@@ -214,7 +197,7 @@ class _TimerUIState extends State<TimerUI> {
                 },
               );
             },
-            child: new AnimatedWidget(
+            child: new DurationDisplay(
               value: widget.timer.functions.getTimeLeft,
               updateRecency: new Duration(
                   microseconds:
@@ -299,10 +282,6 @@ class _StopwatchUIState extends State<StopwatchUI> {
 
   @override
   Widget build(BuildContext context) {
-    List timePassedList =
-        getFormattedDuration(widget.stopwatch.functions.getTimePassed());
-    String timePassedString = getStringFromFormattedDuration(timePassedList);
-
     return new Scaffold(
       key: _stopwatchKey,
       appBar: AppBar(
@@ -364,9 +343,12 @@ class _StopwatchUIState extends State<StopwatchUI> {
                     context: context,
                     builder: (BuildContext context) {
                       picker = new DurationPicker(
-                        initialDuration: widget.stopwatch.functions.getMaxTime(),
+                        initialDuration:
+                            widget.stopwatch.functions.getMaxTime(),
+                        titleText: "Set Max Duration",
                         onConfirm: () {
-                          widget.stopwatch.functions.setMaxTime(picker.getDuration());
+                          widget.stopwatch.functions
+                              .setMaxTime(picker.getDuration());
                           Navigator.pop(context);
                         },
                         onCancel: () => Navigator.pop(context),
@@ -375,18 +357,32 @@ class _StopwatchUIState extends State<StopwatchUI> {
                     },
                   );
                 },
-                child: AnimatedWidget(
-                  value: widget.stopwatch.functions.getTimePassed,
-                  updateRecency: new Duration(
-                      microseconds: ((1 / 60) * 1000 * 1000)
-                          .round()), //60 updates per second
+                child: new Material(
+                  child: new InkWell(
+                    child: new Container(
+                      width: 100.0,
+                      height: 100.0,
+                      padding: EdgeInsets.all(8.0),
+                      child: new Text("hello"),
+
+                        /*
+                        DurationDisplay(
+                        value: widget.stopwatch.functions.getTimePassed,
+                        updateRecency: new Duration(
+                            microseconds: ((1 / 60) * 1000 * 1000)
+                                .round()), //60 updates per second
+                      ),
+                         */
+                    ),
+                  ),
                 ),
               ),
               new FlatButton(
                 onPressed: () => showInSnackBar(
                       _stopwatchKey,
                       "Time Passed",
-                      timePassedString,
+                      getStringFromDuration(
+                          widget.stopwatch.functions.getTimePassed()),
                     ),
                 child: new Text("Time Passed"),
               ),
@@ -419,20 +415,32 @@ showInSnackBar(GlobalKey<ScaffoldState> key, String message, String value) {
 
 //-------------------------COMPONENTS-------------------------
 
-class AnimatedWidget extends StatefulWidget {
+class DurationDisplay extends StatefulWidget {
   final Function value;
   final Duration updateRecency;
+  final bool showDays;
+  final bool showHours;
+  final bool showMinutes;
+  final bool showSeconds;
+  final bool showMilliseconds;
+  final bool showMicroseconds;
 
-  AnimatedWidget({
-    this.value,
-    this.updateRecency,
+  DurationDisplay({
+    @required this.value,
+    @required this.updateRecency,
+    this.showDays: true,
+    this.showHours: true,
+    this.showMinutes: true,
+    this.showSeconds: true,
+    this.showMilliseconds: true,
+    this.showMicroseconds: true,
   });
 
   @override
   _AnimatedWidgetState createState() => _AnimatedWidgetState();
 }
 
-class _AnimatedWidgetState extends State<AnimatedWidget> {
+class _AnimatedWidgetState extends State<DurationDisplay> {
   dynamic getValue() => widget.value();
 
   @override
@@ -457,39 +465,90 @@ class _AnimatedWidgetState extends State<AnimatedWidget> {
   Widget build(BuildContext context) {
     List timeShown = getFormattedDuration(widget.value());
 
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        TimeUnit(
-          number: atleastLengthOfn(timeShown[0], 2),
-          unit: "days",
+    List<bool> spots = [
+      widget.showDays,
+      widget.showHours,
+      widget.showMinutes,
+      widget.showSeconds,
+      widget.showMilliseconds,
+      widget.showMicroseconds,
+    ];
+
+    //brief snippet of code that determines what spaces to show inbetween
+    List<int> spacesUsed = [];
+    bool testBool = false;
+    for(int i=0; i < 6; i++){
+      if(spots[i] == true){
+        if(testBool == false) testBool = true;
+        else{
+          spacesUsed.add(i);
+          testBool == false;
+        }
+      }
+    }
+
+    BoxConstraints thing (var constraint){
+      print(constraint.biggest.width.toString() + " w and h " + constraint.biggest.height.toString());
+      return BoxConstraints(maxWidth: constraint.biggest.width, maxHeight: constraint.biggest.height);
+    }
+
+    return new Container(
+      width: MediaQuery.of(context).size.width,
+      child: new ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height/2),
+        child: new FittedBox(
+          fit: BoxFit.contain,
+          child: new Container(
+            child: new Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                (widget.showDays)
+                    ? TimeUnit(
+                  number: atleastLengthOfn(timeShown[0], 2),
+                  unit: "days",
+                )
+                    : new Text(""),
+                (spacesUsed.contains(1)) ? TimeSpacing() : new Text(""),
+                (widget.showHours)
+                    ? TimeUnit(
+                  number: atleastLengthOfn(timeShown[1], 2),
+                  unit: "hours",
+                )
+                    : new Text(""),
+                (spacesUsed.contains(2)) ? TimeSpacing() : new Text(""),
+                (widget.showMinutes)
+                    ? TimeUnit(
+                  number: atleastLengthOfn(timeShown[2], 2),
+                  unit: "minutes",
+                )
+                    : new Text(""),
+                (spacesUsed.contains(3)) ? TimeSpacing() : new Text(""),
+                (widget.showSeconds)
+                    ? TimeUnit(
+                  number: atleastLengthOfn(timeShown[3], 2),
+                  unit: "seconds",
+                )
+                    : new Text(""),
+                (spacesUsed.contains(4)) ? TimeSpacing() : new Text(""),
+                (widget.showMilliseconds)
+                    ? TimeUnit(
+                  number: atleastLengthOfn(timeShown[4], 3),
+                  unit: "milliseconds",
+                )
+                    : new Text(""),
+                (spacesUsed.contains(5)) ? TimeSpacing() : new Text(""),
+                (widget.showMicroseconds)
+                    ? TimeUnit(
+                  number: atleastLengthOfn(timeShown[5], 3),
+                  unit: "microseconds",
+                )
+                    : new Text(""),
+              ],
+            ),
+          ),
         ),
-        TimeSpacing(),
-        TimeUnit(
-          number: atleastLengthOfn(timeShown[1], 2),
-          unit: "hours",
-        ),
-        TimeSpacing(),
-        TimeUnit(
-          number: atleastLengthOfn(timeShown[2], 2),
-          unit: "minutes",
-        ),
-        TimeSpacing(),
-        TimeUnit(
-          number: atleastLengthOfn(timeShown[3], 2),
-          unit: "seconds",
-        ),
-        TimeSpacing(),
-        TimeUnit(
-          number: atleastLengthOfn(timeShown[4], 3),
-          unit: "milliseconds",
-        ),
-        TimeSpacing(),
-        TimeUnit(
-          number: atleastLengthOfn(timeShown[5], 3),
-          unit: "microseconds",
-        ),
-      ],
+      ),
     );
   }
 }

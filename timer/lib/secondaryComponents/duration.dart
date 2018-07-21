@@ -57,6 +57,8 @@ Duration getRandomDuration({
 String atleastLengthOfn(int num, int minLength) {
   String numStr = num.toString();
   int added0s = minLength - numStr.length;
+  if(num < 0) numStr = numStr.substring(1); //remove the negative sign
   for (int i = added0s; i > 0; i--) numStr = "0" + numStr;
-  return numStr;
+  if(num >= 0) return numStr;
+  else return ("-" + numStr);
 }

@@ -86,7 +86,7 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
 
   //we can either start a brand new timer, or start a timer from its previous location
   start(){
-    if(timer.isAnimating == false){
+    if(isRunning() == false){
       timer.reset(); //reset the timer to prevent odd behavior
       if(lastElapsedDurationNOANIM == null) timer.duration = originalTime; //this is the first time the timer has been started
       else timer.duration = lastElapsedDurationNOANIM; //the timer is being unpaused
@@ -96,7 +96,7 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
   }
 
   stop(){
-    if(timer.isAnimating == true){
+    if(isRunning() == true){
       lastElapsedDurationNOANIM = getTimeLeft();
       timer.stop();
     }
@@ -139,5 +139,10 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
 
   Duration getTimeLeft() => getOriginalTime() - getTimePassed();
 
-  isRunning() => timer.isAnimating;
+  //anim * complete
+  //  t  *    f     = playing [can STOP] [cant PLAY]
+  //  t  *    t     = IMPOSSIBLE
+  //  f  *    f     = paused [can PLAY] [cant STOP]
+  //  f  *    t     = done [can't PLAY] [cant STOP] (stopping here doesn't hurt)
+  isRunning() => timer.isAnimating == true && timer.isCompleted == false;
 }
