@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:timer/primaryComponents/timer.dart' as timerWidget;
 import 'package:timer/primaryComponents/stopwatch.dart' as stopwatchWidget;
 
 import 'package:timer/secondaryComponents/duration.dart';
+import 'package:timer/secondaryComponents/durationDisplay.dart';
 import 'package:timer/secondaryComponents/durationPicker.dart';
 
 void main() {
@@ -166,11 +168,7 @@ class _TimerUIState extends State<TimerUI> {
                 child: new Text(""),
               ),
               new RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    widget.timer.functions.reset();
-                  });
-                },
+                onPressed: () => widget.timer.functions.reset(),
                 child: new Text("Reset"),
               ),
               new Expanded(
@@ -180,8 +178,8 @@ class _TimerUIState extends State<TimerUI> {
               ),
             ],
           ),
-          new GestureDetector(
-            onTap: () {
+          new FlatButton(
+            onPressed: () {
               showModalBottomSheet<void>(
                 context: context,
                 builder: (BuildContext context) {
@@ -197,11 +195,11 @@ class _TimerUIState extends State<TimerUI> {
                 },
               );
             },
-            child: new DurationDisplay(
-              value: widget.timer.functions.getTimeLeft,
-              updateRecency: new Duration(
-                  microseconds:
-                      ((1 / 60) * 1000 * 1000).round()), //60 updates per second
+            child: new Container(
+              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              child: new DurationDisplay(
+                value: widget.timer.functions.getTimeLeft,
+              ),
             ),
           ),
           new Row(
@@ -209,31 +207,31 @@ class _TimerUIState extends State<TimerUI> {
             children: <Widget>[
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                      _timerKey,
-                      "Original Time",
-                      getStringFromDuration(
-                          widget.timer.functions.getOriginalTime()),
-                    ),
+                  _timerKey,
+                  "Original Time",
+                  getStringFromDuration(
+                      widget.timer.functions.getOriginalTime()),
+                ),
                 child: new Text("Original Time"),
               ),
               new Text("="),
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                      _timerKey,
-                      "Time Passed",
-                      getStringFromDuration(
-                          widget.timer.functions.getTimePassed()),
-                    ),
+                  _timerKey,
+                  "Time Passed",
+                  getStringFromDuration(
+                      widget.timer.functions.getTimePassed()),
+                ),
                 child: new Text("Time Passed"),
               ),
               new Text("+"),
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                      _timerKey,
-                      "Time Left",
-                      getStringFromDuration(
-                          widget.timer.functions.getTimeLeft()),
-                    ),
+                  _timerKey,
+                  "Time Left",
+                  getStringFromDuration(
+                      widget.timer.functions.getTimeLeft()),
+                ),
                 child: new Text("Time Left"),
               ),
             ],
@@ -323,12 +321,7 @@ class _StopwatchUIState extends State<StopwatchUI> {
                     child: new Text(""),
                   ),
                   new RaisedButton(
-                    //color: Theme.of(context).buttonColor,
-                    onPressed: () {
-                      setState(() {
-                        widget.stopwatch.functions.reset();
-                      });
-                    },
+                    onPressed: () => widget.stopwatch.functions.reset(),
                     child: new Text("Reset"),
                   ),
                   new Expanded(
@@ -337,8 +330,8 @@ class _StopwatchUIState extends State<StopwatchUI> {
                   )),
                 ],
               ),
-              new GestureDetector(
-                onTap: () {
+              new FlatButton(
+                onPressed: () {
                   showModalBottomSheet<void>(
                     context: context,
                     builder: (BuildContext context) {
@@ -357,33 +350,19 @@ class _StopwatchUIState extends State<StopwatchUI> {
                     },
                   );
                 },
-                child: new Material(
-                  child: new InkWell(
-                    child: new Container(
-                      width: 100.0,
-                      height: 100.0,
-                      padding: EdgeInsets.all(8.0),
-                      child: new Text("hello"),
-
-                        /*
-                        DurationDisplay(
-                        value: widget.stopwatch.functions.getTimePassed,
-                        updateRecency: new Duration(
-                            microseconds: ((1 / 60) * 1000 * 1000)
-                                .round()), //60 updates per second
-                      ),
-                         */
-                    ),
+                child: new Container(
+                  padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: new DurationDisplay(
+                    value: widget.stopwatch.functions.getTimePassed,
                   ),
                 ),
               ),
               new FlatButton(
                 onPressed: () => showInSnackBar(
-                      _stopwatchKey,
-                      "Time Passed",
-                      getStringFromDuration(
-                          widget.stopwatch.functions.getTimePassed()),
-                    ),
+                  _stopwatchKey,
+                  "Time Passed",
+                  getStringFromDuration(widget.stopwatch.functions.getTimePassed()),
+                ),
                 child: new Text("Time Passed"),
               ),
             ],
@@ -411,201 +390,4 @@ showInSnackBar(GlobalKey<ScaffoldState> key, String message, String value) {
       ),
     ),
   );
-}
-
-//-------------------------COMPONENTS-------------------------
-
-class DurationDisplay extends StatefulWidget {
-  final Function value;
-  final Duration updateRecency;
-  final bool showDays;
-  final bool showHours;
-  final bool showMinutes;
-  final bool showSeconds;
-  final bool showMilliseconds;
-  final bool showMicroseconds;
-
-  DurationDisplay({
-    @required this.value,
-    @required this.updateRecency,
-    this.showDays: true,
-    this.showHours: true,
-    this.showMinutes: true,
-    this.showSeconds: true,
-    this.showMilliseconds: true,
-    this.showMicroseconds: true,
-  });
-
-  @override
-  _AnimatedWidgetState createState() => _AnimatedWidgetState();
-}
-
-class _AnimatedWidgetState extends State<DurationDisplay> {
-  dynamic getValue() => widget.value();
-
-  @override
-  void initState() {
-    super.initState();
-    autoUpdate();
-  }
-
-  autoUpdate() async {
-    var prevValue;
-    while (true) {
-      await Future.delayed(widget.updateRecency);
-      var currValue = widget.value();
-      if (this.mounted && currValue != prevValue) {
-        prevValue = currValue;
-        setState(() {});
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List timeShown = getFormattedDuration(widget.value());
-
-    List<bool> spots = [
-      widget.showDays,
-      widget.showHours,
-      widget.showMinutes,
-      widget.showSeconds,
-      widget.showMilliseconds,
-      widget.showMicroseconds,
-    ];
-
-    //brief snippet of code that determines what spaces to show inbetween
-    List<int> spacesUsed = [];
-    bool testBool = false;
-    for(int i=0; i < 6; i++){
-      if(spots[i] == true){
-        if(testBool == false) testBool = true;
-        else{
-          spacesUsed.add(i);
-          testBool == false;
-        }
-      }
-    }
-
-    BoxConstraints thing (var constraint){
-      print(constraint.biggest.width.toString() + " w and h " + constraint.biggest.height.toString());
-      return BoxConstraints(maxWidth: constraint.biggest.width, maxHeight: constraint.biggest.height);
-    }
-
-    return new Container(
-      width: MediaQuery.of(context).size.width,
-      child: new ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height/2),
-        child: new FittedBox(
-          fit: BoxFit.contain,
-          child: new Container(
-            child: new Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                (widget.showDays)
-                    ? TimeUnit(
-                  number: atleastLengthOfn(timeShown[0], 2),
-                  unit: "days",
-                )
-                    : new Text(""),
-                (spacesUsed.contains(1)) ? TimeSpacing() : new Text(""),
-                (widget.showHours)
-                    ? TimeUnit(
-                  number: atleastLengthOfn(timeShown[1], 2),
-                  unit: "hours",
-                )
-                    : new Text(""),
-                (spacesUsed.contains(2)) ? TimeSpacing() : new Text(""),
-                (widget.showMinutes)
-                    ? TimeUnit(
-                  number: atleastLengthOfn(timeShown[2], 2),
-                  unit: "minutes",
-                )
-                    : new Text(""),
-                (spacesUsed.contains(3)) ? TimeSpacing() : new Text(""),
-                (widget.showSeconds)
-                    ? TimeUnit(
-                  number: atleastLengthOfn(timeShown[3], 2),
-                  unit: "seconds",
-                )
-                    : new Text(""),
-                (spacesUsed.contains(4)) ? TimeSpacing() : new Text(""),
-                (widget.showMilliseconds)
-                    ? TimeUnit(
-                  number: atleastLengthOfn(timeShown[4], 3),
-                  unit: "milliseconds",
-                )
-                    : new Text(""),
-                (spacesUsed.contains(5)) ? TimeSpacing() : new Text(""),
-                (widget.showMicroseconds)
-                    ? TimeUnit(
-                  number: atleastLengthOfn(timeShown[5], 3),
-                  unit: "microseconds",
-                )
-                    : new Text(""),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class TimeSpacing extends StatelessWidget {
-  const TimeSpacing({
-    Key key,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      child: new Text(
-        ":",
-        style: TextStyle(
-          fontSize: 32.0,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
-
-class TimeUnit extends StatelessWidget {
-  const TimeUnit({
-    this.number,
-    this.unit,
-    Key key,
-  }) : super(key: key);
-  final String number;
-  final String unit;
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        borderRadius: new BorderRadius.all(const Radius.circular(8.0)),
-      ),
-      child: new RichText(
-        textAlign: TextAlign.center,
-        text: new TextSpan(
-            style: TextStyle(
-              fontSize: 8.0,
-              fontWeight: FontWeight.bold,
-            ),
-            children: [
-              new TextSpan(
-                style: TextStyle(
-                  fontSize: 22.0,
-                  fontWeight: FontWeight.bold,
-                ),
-                text: number,
-              ),
-              new TextSpan(text: "\n$unit"),
-            ]),
-      ),
-    );
-  }
 }

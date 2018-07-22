@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 
 import 'duration.dart';
 
-import 'dart:math';
-
 enum durationTimeType {
   days,
   hours,
