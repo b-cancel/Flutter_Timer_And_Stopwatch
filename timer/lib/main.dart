@@ -36,52 +36,21 @@ void main() {
 class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    void _openTimer() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return TimerExample();
-          },
+    return new DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: TabBar(
+            tabs: <Widget>[
+              Tab(text: "Stopwatch"),
+              Tab(text: "Timer"),
+            ],
+          ),
         ),
-      );
-    }
-
-    void _openStopwatch() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return StopwatchExample();
-          },
-        ),
-      );
-    }
-
-    return new Scaffold(
-      body: new Container(
-        alignment: Alignment.center,
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        body: TabBarView(
           children: <Widget>[
-            new RaisedButton(
-              padding: EdgeInsets.all(8.0),
-              onPressed: _openTimer,
-              child: new Text(
-                "Timer",
-                style: new TextStyle(
-                  fontSize: 48.0,
-                ),
-              ),
-            ),
-            new RaisedButton(
-              padding: EdgeInsets.all(8.0),
-              onPressed: _openStopwatch,
-              child: new Text(
-                "Stopwatch",
-                style: new TextStyle(
-                  fontSize: 48.0,
-                ),
-              ),
-            ),
+            StopwatchExample(),
+            TimerExample(),
           ],
         ),
       ),
@@ -97,9 +66,6 @@ class TimerExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(
-        title: Text('Timer'),
-      ),
       body: new Stack(
         children: <Widget>[
           timer,
@@ -128,6 +94,23 @@ class _TimerUIState extends State<TimerUI> {
 
   DurationPicker picker;
 
+  final running = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    running.value = widget.timer.functions.isRunning();
+    autoUpdate();
+  }
+
+  autoUpdate() async {
+    while (true) {
+      await Future.delayed(new Duration(microseconds: 16666)); //60 times per second
+      if(running.value != widget.timer.functions.isRunning())
+        running.value = widget.timer.functions.isRunning();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -142,26 +125,31 @@ class _TimerUIState extends State<TimerUI> {
                   child: new Text(""),
                 ),
               ),
-              new RaisedButton(
-                onPressed: () {
-                  setState(() {
-                    if (widget.timer.functions.isRunning())
-                      widget.timer.functions.stop();
-                    else
-                      widget.timer.functions.start();
-                  });
+              new AnimatedBuilder(
+                animation: running,
+                builder: (context, child){
+                  return new RaisedButton(
+                    onPressed: () {
+                      setState(() {
+                        if (widget.timer.functions.isRunning())
+                          widget.timer.functions.pause();
+                        else
+                          widget.timer.functions.play();
+                      });
+                    },
+                    child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        (widget.timer.functions.isRunning())
+                            ? Icon(Icons.pause)
+                            : Icon(Icons.play_arrow),
+                        (widget.timer.functions.isRunning())
+                            ? Text("Pause")
+                            : Text("Play"),
+                      ],
+                    ),
+                  );
                 },
-                child: new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    (widget.timer.functions.isRunning())
-                        ? Icon(Icons.stop)
-                        : Icon(Icons.play_arrow),
-                    (widget.timer.functions.isRunning())
-                        ? Text("Stop")
-                        : Text("Start"),
-                  ],
-                ),
               ),
               new Container(
                 width: 16.0,
@@ -278,13 +266,27 @@ class _StopwatchUIState extends State<StopwatchUI> {
 
   DurationPicker picker;
 
+  final running = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    running.value = widget.stopwatch.functions.isRunning();
+    autoUpdate();
+  }
+
+  autoUpdate() async {
+    while (true) {
+      await Future.delayed(new Duration(microseconds: 16666)); //60 times per second
+      if(running.value != widget.stopwatch.functions.isRunning())
+        running.value = widget.stopwatch.functions.isRunning();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _stopwatchKey,
-      appBar: AppBar(
-        title: Text('Stopwatch'),
-      ),
       body: new Container(
           alignment: Alignment.center,
           child: new Column(
@@ -296,26 +298,32 @@ class _StopwatchUIState extends State<StopwatchUI> {
                       child: Container(
                     child: new Text(""),
                   )),
-                  new RaisedButton(
-                      onPressed: () {
-                        setState(() {
-                          if (widget.stopwatch.functions.isRunning())
-                            widget.stopwatch.functions.stop();
-                          else
-                            widget.stopwatch.functions.start();
-                        });
-                      },
-                      child: new Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          (widget.stopwatch.functions.isRunning())
-                              ? Icon(Icons.stop)
-                              : Icon(Icons.play_arrow),
-                          (widget.stopwatch.functions.isRunning())
-                              ? Text("Stop")
-                              : Text("Start"),
-                        ],
-                      )),
+                  new AnimatedBuilder(
+                    animation: running,
+                    builder: (context, child){
+                      return new RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            if (widget.stopwatch.functions.isRunning())
+                              widget.stopwatch.functions.pause();
+                            else
+                              widget.stopwatch.functions.play();
+                          });
+                        },
+                        child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            (widget.stopwatch.functions.isRunning())
+                                ? Icon(Icons.pause)
+                                : Icon(Icons.play_arrow),
+                            (widget.stopwatch.functions.isRunning())
+                                ? Text("Pause")
+                                : Text("Play"),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                   new Container(
                     width: 16.0,
                     child: new Text(""),

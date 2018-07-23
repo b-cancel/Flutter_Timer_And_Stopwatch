@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class TimerFunctions{
   //---Command Functions
-  Function start;
-  Function stop;
+  Function play;
+  Function pause;
   Function set;
   Function reset;
   //---Information Functions
@@ -32,8 +32,8 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
   linkFunctions(){
     var w = widget.functions;
     //---Command Functions
-    w.start = start;
-    w.stop = stop;
+    w.play = play;
+    w.pause = pause;
     w.set = set;
     w.reset = reset;
     //---Information Functions
@@ -85,9 +85,10 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
   //-------------------------COMMAND FUNCTIONS-------------------------
 
   //we can either start a brand new timer, or start a timer from its previous location
-  start(){
+  //NOTE: if the timer is complete it automatically resets itself if you press run start again
+  play(){
     if(isRunning() == false){
-      timer.reset(); //reset the timer to prevent odd behavior
+      timer.reset(); //reset the timer to prevent odd behavior (if you apply a new timer duration it wont be set properly unless you first reset)
       if(lastElapsedDurationNOANIM == null) timer.duration = originalTime; //this is the first time the timer has been started
       else timer.duration = lastElapsedDurationNOANIM; //the timer is being unpaused
       lastElapsedDurationNOANIM = null;
@@ -95,8 +96,9 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
     }
   }
 
-  stop(){
+  pause(){
     if(isRunning() == true){
+      //NOTE: we dont reset the timer because this is not a stop, its a pause
       lastElapsedDurationNOANIM = getTimeLeft();
       timer.stop();
     }
@@ -105,15 +107,15 @@ class _TimerState extends State<Timer> with SingleTickerProviderStateMixin{
   set(Duration newDuration){
 
     bool wasRunning = timer.isAnimating; //save whether or not the timer was running
-    stop(); //if the timer is running stop it
-    timer.reset(); //reset the timer to prevent odd behavior
+    if(wasRunning) pause(); //if the timer is running stop it
+    timer.reset(); //reset the timer to prevent odd behavior (if you apply a new timer duration it wont be set properly unless you first reset)
 
     //set the new timer values
     originalTime = newDuration;
     lastElapsedDurationNOANIM = null;
 
     //start the timer if it was running at first
-    if(wasRunning) start();
+    if(wasRunning) play();
   }
 
   reset() => set(originalTime);

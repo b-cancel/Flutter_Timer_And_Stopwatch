@@ -45,7 +45,7 @@ class _DurationDisplayState extends State<DurationDisplay> {
   autoUpdate() async {
     var prevValue;
     while (true) {
-      await Future.delayed(new Duration(microseconds: 16666));
+      await Future.delayed(new Duration(microseconds: 16666)); //60 times per second
       var currValue = widget.value();
       if (this.mounted && currValue != prevValue) {
         prevValue = currValue;

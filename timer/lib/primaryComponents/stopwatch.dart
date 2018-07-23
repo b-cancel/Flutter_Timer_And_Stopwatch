@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class StopwatchFunctions{
   //---Command Functions
-  Function start;
-  Function stop;
+  Function play;
+  Function pause;
   Function setMaxTime;
   Function reset;
   //---Information Functions
@@ -32,8 +32,8 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
   linkFunctions(){
     var w = widget.functions;
     //---Command Functions
-    w.start = start;
-    w.stop = stop;
+    w.play = play;
+    w.pause = pause;
     w.setMaxTime = setMaxTime;
     w.reset = reset;
     //---Information Functions
@@ -84,9 +84,10 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
   //-------------------------COMMAND FUNCTIONS-------------------------
 
   //we can either start a brand new timer, or start a timer from its previous location
-  start(){
+  //NOTE: if the timer is complete it automatically resets itself if you press run start again
+  play(){
     if(stopwatch.isAnimating == false){
-      stopwatch.reset(); //reset the timer to prevent odd behavior
+      stopwatch.reset(); //reset the timer to prevent odd behavior (if you apply a new timer duration it wont be set properly unless you first reset)
       if(lastElapsedDurationNOANIM == null) stopwatch.duration = maxStopwatchTime; //this is the first time the timer has been started
       else stopwatch.duration = lastElapsedDurationNOANIM; //the timer is being unpaused
       lastElapsedDurationNOANIM = null;
@@ -94,8 +95,9 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
     }
   }
 
-  stop(){
+  pause(){
     if(stopwatch.isAnimating == true){
+      //NOTE: we dont reset the timer because this is not a stop, its a pause
       lastElapsedDurationNOANIM = _getTimeLeft();
       stopwatch.stop();
     }
@@ -104,15 +106,15 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
   setMaxTime(Duration newDuration){
 
     bool wasRunning = stopwatch.isAnimating; //save whether or not the timer was running
-    stop(); //if the timer is running stop it
-    stopwatch.reset(); //reset the timer to prevent odd behavior
+    if(wasRunning) pause(); //if the timer is running stop it
+    stopwatch.reset(); //reset the timer to prevent odd behavior (if you apply a new timer duration it wont be set properly unless you first reset)
 
     //set the new timer values
     maxStopwatchTime = newDuration;
     lastElapsedDurationNOANIM = null;
 
     //start the timer if it was running at first
-    if(wasRunning) start();
+    if(wasRunning) play();
   }
 
   reset() => setMaxTime(maxStopwatchTime);
@@ -138,5 +140,10 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
 
   Duration _getTimeLeft() => getMaxTime() - getTimePassed();
 
-  isRunning() => stopwatch.isAnimating;
+  //anim * complete
+  //  t  *    f     = playing [can STOP] [cant PLAY]
+  //  t  *    t     = IMPOSSIBLE
+  //  f  *    f     = paused [can PLAY] [cant STOP]
+  //  f  *    t     = done [can't PLAY] [cant STOP] (stopping here doesn't hurt)
+  isRunning() => stopwatch.isAnimating == true && stopwatch.isCompleted == false;
 }
