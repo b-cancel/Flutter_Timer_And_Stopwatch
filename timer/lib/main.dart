@@ -105,8 +105,9 @@ class _TimerUIState extends State<TimerUI> {
 
   autoUpdate() async {
     while (true) {
-      await Future.delayed(new Duration(microseconds: 16666)); //60 times per second
-      if(running.value != widget.timer.functions.isRunning())
+      await Future
+          .delayed(new Duration(microseconds: 16666)); //60 times per second
+      if (running.value != widget.timer.functions.isRunning())
         running.value = widget.timer.functions.isRunning();
     }
   }
@@ -118,54 +119,6 @@ class _TimerUIState extends State<TimerUI> {
       body: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          new Row(
-            children: <Widget>[
-              new Expanded(
-                child: Container(
-                  child: new Text(""),
-                ),
-              ),
-              new AnimatedBuilder(
-                animation: running,
-                builder: (context, child){
-                  return new RaisedButton(
-                    onPressed: () {
-                      setState(() {
-                        if (widget.timer.functions.isRunning())
-                          widget.timer.functions.pause();
-                        else
-                          widget.timer.functions.play();
-                      });
-                    },
-                    child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        (widget.timer.functions.isRunning())
-                            ? Icon(Icons.pause)
-                            : Icon(Icons.play_arrow),
-                        (widget.timer.functions.isRunning())
-                            ? Text("Pause")
-                            : Text("Play"),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              new Container(
-                width: 16.0,
-                child: new Text(""),
-              ),
-              new RaisedButton(
-                onPressed: () => widget.timer.functions.reset(),
-                child: new Text("Reset"),
-              ),
-              new Expanded(
-                child: Container(
-                  child: new Text(""),
-                ),
-              ),
-            ],
-          ),
           new FlatButton(
             onPressed: () {
               showModalBottomSheet<void>(
@@ -193,35 +146,108 @@ class _TimerUIState extends State<TimerUI> {
           new Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new FlatButton(
+              new RaisedButton(
                 onPressed: () => showInSnackBar(
-                  _timerKey,
-                  "Original Time",
-                  getStringFromDuration(
-                      widget.timer.functions.getOriginalTime()),
-                ),
-                child: new Text("Original Time"),
-              ),
-              new Text("="),
-              new FlatButton(
-                onPressed: () => showInSnackBar(
-                  _timerKey,
+                      _timerKey,
+                      "Time Passed",
+                      getStringFromDuration(
+                          widget.timer.functions.getTimePassed()),
+                    ),
+                shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(30.0)),
+                color: Theme.of(context).accentColor,
+                child: new Text(
                   "Time Passed",
-                  getStringFromDuration(
-                      widget.timer.functions.getTimePassed()),
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorDark,
+                  ),
                 ),
-                child: new Text("Time Passed"),
               ),
-              new Text("+"),
-              new FlatButton(
+              new Container(
+                width: 16.0,
+                child: new Text(""),
+              ),
+              new Listener(
+                onPointerDown: (e) {},
+                child: new RaisedButton(
+                    shape: new CircleBorder(),
+                    color: Theme.of(context).accentColor,
+                    onPressed: () {},
+                    child: new Container(
+                      width: 65.0,
+                      height: 65.0,
+                      padding: EdgeInsets.all(8.0),
+                      child: new FittedBox(
+                        fit: BoxFit.fill,
+                        child: new AnimatedBuilder(
+                          animation: running,
+                          builder: (context, child) {
+                            return new GestureDetector(
+                              onTapUp: (TapUpDetails tud) {
+                                showInSnackBar(
+                                  _timerKey,
+                                  "Long Hold To Reset",
+                                  "",
+                                );
+                                setState(() {
+                                  if (widget.timer.functions.isRunning())
+                                    widget.timer.functions.pause();
+                                  else
+                                    widget.timer.functions.play();
+                                });
+                              },
+                              onLongPress: () => widget.timer.functions.reset(),
+                              child: (widget.timer.functions.isRunning())
+                                  ? Icon(
+                                Icons.pause,
+                                color: Theme.of(context).primaryColorDark,
+                              )
+                                  : Icon(
+                                Icons.play_arrow,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    )
+                ),
+              ),
+              new Container(
+                width: 16.0,
+                child: new Text(""),
+              ),
+              new RaisedButton(
                 onPressed: () => showInSnackBar(
-                  _timerKey,
-                  "Time Left",
-                  getStringFromDuration(
-                      widget.timer.functions.getTimeLeft()),
+                      _timerKey,
+                      "Time Passed",
+                      getStringFromDuration(
+                          widget.timer.functions.getTimePassed()),
+                    ),
+                shape: new RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(30.0)),
+                color: Theme.of(context).accentColor,
+                child: new Text(
+                  "Time Passed",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorDark,
+                  ),
                 ),
-                child: new Text("Time Left"),
               ),
+            ],
+          ),
+          new Container(
+            width: 16.0,
+            child: new Text(""),
+          ),
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new FloatingActionButton(
+                mini: true,
+                onPressed: () => widget.timer.functions.reset(),
+                child: Icon(Icons.refresh),
+              )
             ],
           ),
         ],
@@ -277,8 +303,9 @@ class _StopwatchUIState extends State<StopwatchUI> {
 
   autoUpdate() async {
     while (true) {
-      await Future.delayed(new Duration(microseconds: 16666)); //60 times per second
-      if(running.value != widget.stopwatch.functions.isRunning())
+      await Future
+          .delayed(new Duration(microseconds: 16666)); //60 times per second
+      if (running.value != widget.stopwatch.functions.isRunning())
         running.value = widget.stopwatch.functions.isRunning();
     }
   }
@@ -292,52 +319,7 @@ class _StopwatchUIState extends State<StopwatchUI> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Row(
-                children: <Widget>[
-                  new Expanded(
-                      child: Container(
-                    child: new Text(""),
-                  )),
-                  new AnimatedBuilder(
-                    animation: running,
-                    builder: (context, child){
-                      return new RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            if (widget.stopwatch.functions.isRunning())
-                              widget.stopwatch.functions.pause();
-                            else
-                              widget.stopwatch.functions.play();
-                          });
-                        },
-                        child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            (widget.stopwatch.functions.isRunning())
-                                ? Icon(Icons.pause)
-                                : Icon(Icons.play_arrow),
-                            (widget.stopwatch.functions.isRunning())
-                                ? Text("Pause")
-                                : Text("Play"),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                  new Container(
-                    width: 16.0,
-                    child: new Text(""),
-                  ),
-                  new RaisedButton(
-                    onPressed: () => widget.stopwatch.functions.reset(),
-                    child: new Text("Reset"),
-                  ),
-                  new Expanded(
-                      child: Container(
-                    child: new Text(""),
-                  )),
-                ],
-              ),
+              //-------------------------START Duration
               new FlatButton(
                 onPressed: () {
                   showModalBottomSheet<void>(
@@ -365,13 +347,101 @@ class _StopwatchUIState extends State<StopwatchUI> {
                   ),
                 ),
               ),
-              new FlatButton(
-                onPressed: () => showInSnackBar(
-                  _stopwatchKey,
-                  "Time Passed",
-                  getStringFromDuration(widget.stopwatch.functions.getTimePassed()),
-                ),
-                child: new Text("Time Passed"),
+              //-------------------------END Duration
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new Expanded(
+                    child: new Container(
+                      child: new Text(""),
+                    ),
+                  ),
+                  new RaisedButton(
+                    onPressed: () => showInSnackBar(
+                          _stopwatchKey,
+                          "Time Passed",
+                          getStringFromDuration(
+                              widget.stopwatch.functions.getTimePassed()),
+                        ),
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0)),
+                    color: Theme.of(context).accentColor,
+                    child: new Text(
+                      "Time Passed",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                    ),
+                  ),
+                  new Listener(
+                    onPointerDown: (e) {},
+                    child: new RaisedButton(
+                        shape: new CircleBorder(),
+                        color: Theme.of(context).accentColor,
+                        onPressed: () {},
+                        child: new Container(
+                          width: 65.0,
+                          height: 65.0,
+                          padding: EdgeInsets.all(8.0),
+                          child: new FittedBox(
+                            fit: BoxFit.fill,
+                            child: new AnimatedBuilder(
+                              animation: running,
+                              builder: (context, child) {
+                                return new GestureDetector(
+                                  onTapUp: (TapUpDetails tud) {
+                                    showInSnackBar(
+                                      _stopwatchKey,
+                                      "Long Hold To Reset",
+                                      "",
+                                    );
+                                    setState(() {
+                                      if (widget.stopwatch.functions.isRunning())
+                                        widget.stopwatch.functions.pause();
+                                      else
+                                        widget.stopwatch.functions.play();
+                                    });
+                                  },
+                                  onLongPress: () => widget.stopwatch.functions.reset(),
+                                  child: (widget.stopwatch.functions.isRunning())
+                                      ? Icon(
+                                    Icons.pause,
+                                    color: Theme.of(context).primaryColorDark,
+                                  )
+                                      : Icon(
+                                    Icons.play_arrow,
+                                    color: Theme.of(context).primaryColorDark,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                    ),
+                  ),
+                  new RaisedButton(
+                    onPressed: () => showInSnackBar(
+                          _stopwatchKey,
+                          "Time Passed",
+                          getStringFromDuration(
+                              widget.stopwatch.functions.getTimePassed()),
+                        ),
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0)),
+                    color: Theme.of(context).accentColor,
+                    child: new Text(
+                      "Time Passed",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                    ),
+                  ),
+                  new Expanded(
+                    child: new Container(
+                      child: new Text(""),
+                    ),
+                  ),
+                ],
               ),
             ],
           )),
