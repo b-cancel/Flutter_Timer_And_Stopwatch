@@ -9,7 +9,8 @@ class StopwatchFunctions{
   //---Information Functions
   Function getMaxTime;
   Function getTimePassed;
-  Function getTimeLeft;
+  Function getSplitTime;
+  Function getLapTime;
   Function isRunning;
 }
 
@@ -39,6 +40,8 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
     //---Information Functions
     w.getMaxTime = getMaxTime;
     w.getTimePassed = getTimePassed;
+    w.getSplitTime = getSplitTime;
+    w.getLapTime = getLapTime;
     w.isRunning = isRunning;
   }
 
@@ -48,7 +51,7 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
     stopwatch = new AnimationController(
       vsync: this,
     );
-    maxStopwatchTime = new Duration(days: 365);
+    maxStopwatchTime = new Duration(days: 99);
     lastElapsedDurationNOANIM = null;
 
     linkFunctions();
@@ -136,6 +139,24 @@ class _StopwatchState extends State<Stopwatch> with SingleTickerProviderStateMix
           return Duration.zero; //the timer never began (show original time on screen)
       }
     }
+  }
+
+  Duration getSplitTime(){
+    if(stopwatch.isAnimating)
+      return stopwatch.lastElapsedDuration + (maxStopwatchTime-stopwatch.duration);
+    else
+      return Duration.zero;
+  }
+
+  Duration getLapTime(){
+    if(stopwatch.isAnimating){
+      var retVal = stopwatch.lastElapsedDuration;
+      pause();
+      play();
+      return retVal;
+    }
+    else
+      return Duration.zero;
   }
 
   Duration _getTimeLeft() => getMaxTime() - getTimePassed();
