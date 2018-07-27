@@ -1,6 +1,5 @@
 # Flutter_Timer_And_Stopwatch
 <h2> A Timer and Stopwatch with all the functionality you would expect </h2>
-<br>
 <h4> An Example of how to use everything is contained in main.dart </h4> 
 <h3> The Timer Includes </h3>
 1. void play() <br>
@@ -11,7 +10,6 @@
 6. Duration getTimePassed() <br>
 7. Duration getTimeLeft() <br>
 8. bool isRunning() <br>
-<br>
 <h3> The Stopwatch Includes </h3>
 1. void play() <br>
 2. void pause() <br>
@@ -22,7 +20,6 @@
 7. Duration getSplitTime() <br>
 8. Duration getLapTime() <br>
 9. bool isRunning() <br>
-<br>
 <h3> The Kit Additionally Includes </h3>
 <h4> A Re-Usable "durationPicker" with the options or parameters </h4>
 1. final Duration initialDuration; <br>
@@ -65,7 +62,6 @@
 38. final TextStyle buttonTextStyle; <br>
 39. final String leftButtonText; <br>
 40. final String rightButtonText; <br>
-<br>
 <h4> A Re-Usable "durationDisplay" with the options </h4>
 1. final bool showDays <br>
 2. final bool showHours <br>
@@ -74,10 +70,8 @@
 5. final bool showMilliseconds <br>
 6. final bool showMicroseconds <br>
 <br>
-<br>
 <h5>Stopwatch</h5>
 <img src="https://media.giphy.com/media/DQdmcrEwAFqneM6tiL/giphy.gif" width="360"/>
 <br>
 <h5>Timer</h5>
 <img src="https://media.giphy.com/media/5qFCRiENukaLzB7Yoy/giphy.gif" width="360"/>
-<br>
