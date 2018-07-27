@@ -2,9 +2,7 @@
 <h2> A Timer and Stopwatch with all the functionality you would expect </h2>
 <br>
 <h4> An Example of how to use everything is contained in main.dart </h4> 
-<br>
 <h3> The Timer Includes </h3>
-<br>
 1. void play() <br>
 2. void pause() <br>
 3. void set(Duration) <br>
@@ -15,7 +13,6 @@
 8. bool isRunning() <br>
 <br>
 <h3> The Stopwatch Includes </h3>
-<br>
 1. void play() <br>
 2. void pause() <br>
 3. void setMaxTime(Duration) <br>
@@ -27,9 +24,7 @@
 9. bool isRunning() <br>
 <br>
 <h3> The Kit Additionally Includes </h3>
-<br>
 <h4> A Re-Usable "durationPicker" with the options or parameters </h4>
-<br>
 1. final Duration initialDuration; <br>
 2. final Function onConfirm; <br>
 3. final Function onCancel; <br>
@@ -72,7 +67,6 @@
 40. final String rightButtonText; <br>
 <br>
 <h4> A Re-Usable "durationDisplay" with the options </h4>
-<br>
 1. final bool showDays <br>
 2. final bool showHours <br>
 3. final bool showMinutes <br>
