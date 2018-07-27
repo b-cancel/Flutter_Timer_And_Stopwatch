@@ -119,6 +119,7 @@ class _TimerUIState extends State<TimerUI> {
       body: new Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          //-------------------------DURATION START
           new FlatButton(
             onPressed: () {
               showModalBottomSheet<void>(
@@ -143,6 +144,7 @@ class _TimerUIState extends State<TimerUI> {
               ),
             ),
           ),
+          //-------------------------DURATION END
           new AnimatedBuilder(
             animation: running,
             builder: (context, child) {
@@ -151,16 +153,15 @@ class _TimerUIState extends State<TimerUI> {
                 children: <Widget>[
                   new RaisedButton(
                     onPressed: () => showInSnackBar(
-                      _timerKey,
-                      "Time Passed",
-                      getStringFromDuration(
-                          widget.timer.functions.getTimePassed()),
-                    ),
+                          _timerKey,
+                          "Time Passed",
+                          getStringFromDuration(widget.timer.functions.getTimePassed()),
+                        ),
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0)),
                     color: Theme.of(context).accentColor,
                     child: new Text(
-                      "Time Passed",
+                      "Passed",
                       style: TextStyle(
                         color: Theme.of(context).primaryColorDark,
                       ),
@@ -181,30 +182,35 @@ class _TimerUIState extends State<TimerUI> {
                     },
                     child: (running.value)
                         ? Icon(
-                      Icons.pause,
-                      color: Theme.of(context).primaryColorDark,
-                    )
+                            Icons.pause,
+                            color: Theme.of(context).primaryColorDark,
+                          )
                         : Icon(
-                      Icons.play_arrow,
-                      color: Theme.of(context).primaryColorDark,
-                    ),
+                            Icons.play_arrow,
+                            color: Theme.of(context).primaryColorDark,
+                          ),
                   ),
                   new Container(
                     width: 16.0,
                     child: new Text(""),
                   ),
                   new RaisedButton(
-                    onPressed: () => showInSnackBar(
-                      _timerKey,
-                      "Time Passed",
-                      getStringFromDuration(
-                          widget.timer.functions.getTimePassed()),
-                    ),
+                    onPressed: () {
+                      if(running.value){
+                        showInSnackBar(
+                          _timerKey,
+                          "Time Left",
+                          getStringFromDuration(widget.timer.functions.getTimeLeft()),
+                        );
+                      }
+                      else
+                        widget.timer.functions.reset();
+                    },
                     shape: new RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(30.0)),
                     color: Theme.of(context).accentColor,
                     child: new Text(
-                      "Time Passed",
+                      (running.value) ? r" Left" : "Reset",
                       style: TextStyle(
                         color: Theme.of(context).primaryColorDark,
                       ),
@@ -325,12 +331,14 @@ class _StopwatchUIState extends State<StopwatchUI> {
                       ),
                       new RaisedButton(
                         onPressed: () => showInSnackBar(
-                          _stopwatchKey,
-                          (running.value) ? "Lap" : "Passed",
-                          getStringFromDuration(
-                            (running.value) ? widget.stopwatch.functions.getLapTime() : widget.stopwatch.functions.getTimePassed(),
-                          ),
-                        ),
+                              _stopwatchKey,
+                              (running.value) ? "Lap Time" : "Time Passed",
+                              getStringFromDuration(
+                                (running.value)
+                                    ? widget.stopwatch.functions.getLapTime()
+                                    : widget.stopwatch.functions.getTimePassed(),
+                              ),
+                            ),
                         shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(30.0),
                         ),
@@ -357,26 +365,30 @@ class _StopwatchUIState extends State<StopwatchUI> {
                         },
                         child: (running.value)
                             ? Icon(
-                          Icons.pause,
-                          color: Theme.of(context).primaryColorDark,
-                        )
+                                Icons.pause,
+                                color: Theme.of(context).primaryColorDark,
+                              )
                             : Icon(
-                          Icons.play_arrow,
-                          color: Theme.of(context).primaryColorDark,
-                        ),
+                                Icons.play_arrow,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
                       ),
                       new Container(
                         width: 16.0,
                         child: new Text(""),
                       ),
                       new RaisedButton(
-                        onPressed: () => showInSnackBar(
-                          _stopwatchKey,
-                          (running.value) ? "Split" : "Reset",
-                          getStringFromDuration(
-                            (running.value) ? widget.stopwatch.functions.getSplitTime() : widget.stopwatch.functions.reset(),
-                          ),
-                        ),
+                        onPressed: () {
+                          if (running.value) {
+                            showInSnackBar(
+                              _stopwatchKey,
+                              "Split Time",
+                              getStringFromDuration(widget.stopwatch.functions.getSplitTime()),
+                            );
+                          }
+                          else
+                            widget.stopwatch.functions.reset();
+                        },
                         shape: new RoundedRectangleBorder(
                             borderRadius: new BorderRadius.circular(30.0)),
                         color: Theme.of(context).accentColor,
