@@ -5,7 +5,10 @@
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=bryan%2eo%2ecancel%40gmail%2ecom&lc=US&item_name=Cup%20Of%20Coffee&item_number=0000&no_note=0&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest">
   <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="PayPal Donate Button">
 </a>
-<h4> </h4>
+<p float="left">
+  <img src="https://media.giphy.com/media/DQdmcrEwAFqneM6tiL/giphy.gif" width="250"/>
+  <img src="https://media.giphy.com/media/5qFCRiENukaLzB7Yoy/giphy.gif" width="250"/>
+</p>
 <h2> A Timer and Stopwatch with all the functionality you would expect </h2>
 <h4> An Example of how to use everything is contained in main.dart </h4> 
 <h3> The Timer Includes </h3>
@@ -77,8 +80,3 @@
 5. final bool showMilliseconds <br>
 6. final bool showMicroseconds <br>
 <br>
-<h5>Stopwatch</h5>
-<img src="https://media.giphy.com/media/DQdmcrEwAFqneM6tiL/giphy.gif" width="360"/>
-<br>
-<h5>Timer</h5>
-<img src="https://media.giphy.com/media/5qFCRiENukaLzB7Yoy/giphy.gif" width="360"/>
